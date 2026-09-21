@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AM Group HR Intelligence</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* ── TOKENS ─────────────────────────────────── */
+:root{
+  --bg:#F2F4F8;--surf:#fff;--surf2:#F8F9FC;--bdr:#E2E6EF;
+  --t1:#0E1F3D;--t2:#4B5A72;--t3:#8895AA;
+  --amber:#D97706;--ambl:#FEF3C7;
+  --teal:#0B9E8F;--teal-l:#D1FAF5;
+  --rose:#DC4545;--rose-l:#FEE2E2;
+  --indigo:#4F63E7;--indigo-l:#EEF0FF;
+  --purple:#7C3AED;--navy:#0E2B55;
+  --sh:0 1px 3px rgba(14,31,61,.07),0 1px 2px rgba(14,31,61,.04);
+  --sh2:0 4px 12px rgba(14,31,61,.08);
+  --ch:260px;
+}
+[data-theme="dark"]{
+  --bg:#0C1827;--surf:#132338;--surf2:#0F1D30;--bdr:#1E3352;
+  --t1:#E8EEF7;--t2:#8EA3C0;--t3:#4A6080;
+  --amber:#F5B03C;--ambl:rgba(245,176,60,.15);
+  --teal:#14C4B4;--teal-l:rgba(20,196,180,.15);
+  --rose:#EF5353;--rose-l:rgba(239,83,83,.15);
+  --indigo:#6B7FF0;--indigo-l:rgba(107,127,240,.15);
+  --navy:#BAD0F0;
+  --sh:0 1px 3px rgba(0,0,0,.25);--sh2:0 4px 12px rgba(0,0,0,.35);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ── HEADER ─────────────────────────────────── */
+.hdr{background:#0D2247;background-image:linear-gradient(135deg,#0D2247 0%,#152F5E 100%);
+  padding:0 20px;display:flex;align-items:center;justify-content:space-between;
+  height:56px;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.06)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:34px;height:34px;flex-shrink:0;background:var(--amber);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12px;color:#fff;letter-spacing:.3px}
+.brand-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;
+  color:#fff;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-sub{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.6px;text-transform:uppercase;margin-top:1px}
+.hdr-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hdr-meta{font-size:11px;color:rgba(255,255,255,.4);border-right:1px solid rgba(255,255,255,.1);padding-right:12px;white-space:nowrap}
+.theme-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.65);border-radius:6px;padding:5px 11px;font-size:12px;
+  cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.theme-btn:hover{background:rgba(255,255,255,.14)}
+
+/* ── TABS ─────────────────────────────────── */
+.tabs{background:var(--surf);border-bottom:1px solid var(--bdr);
+  padding:0 16px;display:flex;gap:0;overflow-x:auto;
+  position:sticky;top:56px;z-index:90;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{padding:13px 15px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;
+  font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;white-space:nowrap;flex-shrink:0}
+.tab-btn:hover{color:var(--t2)}
+.tab-btn.active{color:var(--amber);border-bottom-color:var(--amber)}
+
+/* ── SECTIONS ─────────────────────────────────── */
+.sec{display:none;max-width:1380px;margin:0 auto;padding:20px 16px}
+.sec.active{display:block}
+.sec-hd{margin-bottom:18px}
+.sec-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.3px;color:var(--t1)}
+.sec-sub{font-size:11px;color:var(--t3);margin-top:3px}
+
+/* ── KPI ROW ─────────────────────────────────── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kpi-row-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+.kpi{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;
+  padding:16px 18px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--ac,var(--amber));border-radius:0 0 10px 10px}
+.kpi-lbl{font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.kpi-val{font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:800;
+  color:var(--t1);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.kpi-note{font-size:11px;color:var(--t3);margin-top:5px}
+.badge{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.bg{background:var(--teal-l);color:#055950}[data-theme="dark"] .bg{color:#14C4B4}
+.ba{background:var(--ambl);color:#924D00}[data-theme="dark"] .ba{color:#F5B03C}
+.br{background:var(--rose-l);color:#8B1F1F}[data-theme="dark"] .br{color:#EF5353}
+.bi{background:var(--indigo-l);color:#2030A0}[data-theme="dark"] .bi{color:#6B7FF0}
+
+/* ── GRID ─────────────────────────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.g31{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px}
+.g13{display:grid;grid-template-columns:1fr 2fr;gap:14px;margin-bottom:14px}
+.mb{margin-bottom:14px}
+
+/* ── CARD ─────────────────────────────────── */
+.card{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:18px 20px;box-shadow:var(--sh)}
+.card-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:var(--t1);margin-bottom:2px}
+.card-sub{font-size:11px;color:var(--t3);margin-bottom:12px}
+
+/* ── CHART WRAPPER ─────────────────────────────────── */
+.cw{position:relative;width:100%;height:var(--ch,260px)}
+.cw canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+
+/* ── FUNNEL ─────────────────────────────────── */
+.fn-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.fn-meta{width:120px;flex-shrink:0;text-align:right}
+.fn-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;color:var(--t1);font-variant-numeric:tabular-nums}
+.fn-lbl{font-size:10px;color:var(--t2);font-weight:500}
+.fn-pct{font-size:9px;color:var(--t3)}
+.fn-bar-bg{flex:1;background:var(--surf2);border-radius:4px;height:28px;overflow:hidden;border:1px solid var(--bdr);min-width:0}
+.fn-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;color:#fff;transition:width .5s;min-width:0}
+
+/* ── H-BARS ─────────────────────────────────── */
+.hb-row{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.hb-lbl{width:110px;flex-shrink:0;font-size:11px;color:var(--t2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb-track{flex:1;background:var(--surf2);border-radius:3px;height:20px;overflow:hidden;border:1px solid var(--bdr);display:flex;gap:1px;min-width:0}
+.hb-seg{height:100%;display:flex;align-items:center;padding:0 4px;font-size:9px;font-weight:600;color:#fff;min-width:0;overflow:hidden;white-space:nowrap;transition:width .4s}
+.hb-val{width:38px;flex-shrink:0;text-align:right;font-size:11px;font-weight:600;color:var(--t1);font-variant-numeric:tabular-nums}
+.hb-rate{width:36px;flex-shrink:0;text-align:right;font-size:10px;color:var(--t3)}
+
+/* ── TABLE ─────────────────────────────────── */
+.tbl-wrap{overflow-x:auto;margin-top:10px;-webkit-overflow-scrolling:touch}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;min-width:580px}
+.tbl th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--t3);padding:0 8px 8px;border-bottom:2px solid var(--bdr);white-space:nowrap}
+.tbl th.r{text-align:right}
+.tbl td{padding:8px 8px;border-bottom:1px solid var(--bdr);color:var(--t2);vertical-align:middle}
+.tbl td.r{text-align:right}
+.tbl tr:last-child td{border:none}
+.tbl tr:hover td{background:var(--surf2)}
+.tn{font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:var(--t1);font-size:12px}
+.rank{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;
+  border-radius:50%;font-size:9px;font-weight:700;margin-right:5px}
+.r1{background:#FFF3C7;color:#875A00}.r2{background:#E8E8E8;color:#333}
+.r3{background:#FFE5CC;color:#5C2900}.rn{background:var(--surf2);color:var(--t3)}
+.mini-bg{background:var(--surf2);border-radius:2px;height:3px;margin-top:3px}
+.mini-fill{height:100%;border-radius:2px;transition:width .3s}
+
+/* ── LEGEND ─────────────────────────────────── */
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2)}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── CALLOUT ─────────────────────────────────── */
+.callout{border-radius:8px;padding:10px 14px;font-size:12px;line-height:1.6;margin-bottom:14px;border:1px solid}
+.ca{background:var(--ambl);border-color:var(--amber);color:var(--amber)}
+.ct{background:var(--teal-l);border-color:var(--teal);color:var(--teal)}
+.cr{background:var(--rose-l);border-color:var(--rose);color:var(--rose)}
+.ci{background:var(--indigo-l);border-color:var(--indigo);color:var(--indigo)}
+
+/* ── SOURCE ROW ─────────────────────────────────── */
+.src-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bdr)}
+.src-row:last-child{border:none}
+.src-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.src-name{flex:1;font-size:12px;color:var(--t2);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.src-bar-bg{width:80px;flex-shrink:0;background:var(--surf2);border-radius:3px;height:5px}
+.src-bar-fill{height:100%;border-radius:3px}
+.src-pill{padding:2px 7px;border-radius:12px;font-size:10px;font-weight:600;width:48px;text-align:center;flex-shrink:0}
+.ph{background:var(--teal-l);color:#055950}[data-theme="dark"] .ph{color:#14C4B4}
+.pm{background:var(--ambl);color:#924D00}[data-theme="dark"] .pm{color:#F5B03C}
+.pl{background:var(--rose-l);color:#8B1F1F}[data-theme="dark"] .pl{color:#EF5353}
+
+/* ── TAT ─────────────────────────────────── */
+.tat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.tat-card{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;
+  padding:16px 18px;box-shadow:var(--sh);text-align:center}
+.tat-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;
+  color:var(--t1);letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.tat-unit{font-size:11px;color:var(--t3);font-weight:500}
+.tat-lbl{font-size:11px;color:var(--t2);margin-top:5px}
+.tat-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.tat-name{width:100px;flex-shrink:0;font-size:11px;color:var(--t2);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tat-bar-bg{flex:1;background:var(--surf2);border-radius:4px;height:22px;border:1px solid var(--bdr);min-width:0}
+.tat-bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 6px;
+  font-size:10px;font-weight:600;color:#fff;transition:width .5s}
+.tat-val{width:40px;flex-shrink:0;text-align:right;font-size:11px;font-weight:600;color:var(--t1)}
+
+/* ── GENDER ─────────────────────────────────── */
+.gender-split{display:flex;align-items:stretch;border-radius:8px;overflow:hidden;height:40px;margin-bottom:10px;border:1px solid var(--bdr)}
+.gs-male{background:#4F63E7;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;transition:width .5s;padding:0 6px;text-align:center;overflow:hidden}
+.gs-female{background:#DC4545;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;transition:width .5s;padding:0 6px;text-align:center;overflow:hidden;white-space:nowrap}
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media(max-width:1024px){
+  .kpi-row-5{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:900px){
+  .kpi-row,.kpi-row-5{grid-template-columns:1fr 1fr}
+  .g2,.g3,.g4,.g31,.g13{grid-template-columns:1fr}
+  .tat-grid{grid-template-columns:1fr 1fr}
+  .cw{--ch:220px}
+}
+@media(max-width:600px){
+  .hdr-meta{display:none}
+  .brand-sub{display:none}
+  .kpi-row,.kpi-row-5{grid-template-columns:1fr 1fr}
+  .kpi-val{font-size:20px}
+  .tat-grid{grid-template-columns:1fr}
+  .cw{--ch:190px}
+  .fn-meta{width:90px}
+  .fn-num{font-size:12px}
+  .hb-lbl{width:80px;font-size:10px}
+  .tat-name{width:75px}
+  .sec{padding:14px 12px}
+  .card{padding:14px 14px}
+  .sec-title{font-size:16px}
+}
+@media(max-width:400px){
+  .kpi-row,.kpi-row-5{grid-template-columns:1fr}
+  .hb-lbl{width:68px}
+}
+
+/* ── HEADER BADGES / REFRESH ─── */
+.src-badge{font-size:11px;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);white-space:nowrap}
+.upd-time{font-size:11px;color:rgba(255,255,255,.4);white-space:nowrap}
+.refresh-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  color:rgba(255,255,255,.75);border-radius:6px;padding:5px 11px;font-size:12px;
+  cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.refresh-btn:hover{background:rgba(255,255,255,.16)}
+.refresh-btn.spinning{opacity:.6;pointer-events:none}
+
+/* ── MODAL ─── */
+[hidden]{display:none!important}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;
+  display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.modal-box{background:var(--surf);border:1px solid var(--bdr);border-radius:14px;
+  width:100%;max-width:740px;max-height:90vh;display:flex;flex-direction:column;
+  box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.modal-hdr-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:var(--t1)}
+.modal-close{background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;line-height:1;padding:2px 6px}
+.modal-close:hover{color:var(--t1)}
+.modal-body{padding:20px;overflow-y:auto;flex:1}
+.modal-sub{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.modal-count{font-size:12px;color:var(--t3);font-family:'Plus Jakarta Sans',sans-serif}
+.modal-table-wrap{overflow-x:auto;flex:1;overflow-y:auto}
+.modal-table-wrap table{width:100%;border-collapse:collapse;font-size:12px}
+.modal-table-wrap th{padding:8px 12px;text-align:left;font-size:10px;font-weight:600;
+  letter-spacing:.6px;text-transform:uppercase;color:var(--t3);
+  border-bottom:1px solid var(--bdr);background:var(--surf2);white-space:nowrap;position:sticky;top:0}
+.modal-table-wrap td{padding:8px 12px;border-bottom:1px solid var(--bdr);color:var(--t2);white-space:nowrap}
+.modal-table-wrap tr:hover td{background:var(--surf2)}
+.modal-pg{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;border-top:1px solid var(--bdr);flex-shrink:0;gap:8px}
+.modal-pg button{background:var(--surf2);border:1px solid var(--bdr);color:var(--t2);
+  border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit}
+.modal-pg button:hover:not(:disabled){background:var(--bdr)}
+.modal-pg button:disabled{opacity:.35;cursor:default}
+.modal-pg span{font-size:12px;color:var(--t3)}
+.exp-btn{background:var(--teal);border:none;color:#fff;border-radius:6px;
+  padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.exp-btn:hover{opacity:.85}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.3px}
+.pill-green{background:rgba(11,158,143,.18);color:var(--teal)}
+.pill-amber{background:rgba(217,119,6,.18);color:var(--amber)}
+.pill-rose{background:rgba(220,69,69,.18);color:var(--rose)}
+.pill-grey{background:rgba(136,149,170,.15);color:var(--t3)}
+.pill-indigo{background:rgba(79,99,231,.18);color:var(--indigo)}
+
+/* ── SETTINGS MODAL FIELDS ─── */
+.sf{margin-bottom:14px}
+.sf label{display:block;font-size:11px;font-weight:600;letter-spacing:.4px;
+  text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.sf input{width:100%;padding:9px 12px;background:var(--surf2);border:1px solid var(--bdr);
+  border-radius:8px;color:var(--t1);font-size:13px;font-family:inherit;outline:none;transition:.15s}
+.sf input:focus{border-color:var(--amber)}
+.sf-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.sf-btns button{padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;
+  cursor:pointer;font-family:inherit;border:none;transition:.15s}
+.sf-btns .btn-save{background:var(--amber);color:#fff}
+.sf-btns .btn-test{background:var(--surf2);border:1px solid var(--bdr);color:var(--t1)}
+.sf-btns .btn-sample{background:var(--surf2);border:1px solid var(--bdr);color:var(--t2)}
+.sf-btns button:hover{opacity:.85}
+.gs-status{margin-top:12px;font-size:12px;padding:8px 12px;border-radius:8px;line-height:1.5}
+.gs-ok{background:rgba(11,158,143,.12);color:var(--teal)}
+.gs-err{background:rgba(220,69,69,.12);color:var(--rose)}
+.gs-inf{background:rgba(79,99,231,.12);color:var(--indigo)}
+
+/* ── DATA EXPLORER ─── */
+.ex-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.ex-search{padding:8px 12px;background:var(--surf);border:1px solid var(--bdr);
+  border-radius:8px;color:var(--t1);font-size:13px;font-family:inherit;outline:none;min-width:220px;flex:1}
+.ex-search:focus{border-color:var(--amber)}
+.ex-sel{padding:7px 10px;background:var(--surf);border:1px solid var(--bdr);
+  border-radius:8px;color:var(--t1);font-size:12px;font-family:inherit;cursor:pointer;outline:none}
+.ex-sel:focus{border-color:var(--amber)}
+.ex-table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--bdr)}
+.ex-table{width:100%;border-collapse:collapse;font-size:12px}
+.ex-table th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;color:var(--t3);
+  border-bottom:1px solid var(--bdr);background:var(--surf2);white-space:nowrap;position:sticky;top:0}
+.ex-table td{padding:8px 12px;border-bottom:1px solid var(--bdr);color:var(--t2);white-space:nowrap}
+.ex-table tr:hover td{background:var(--surf2)}
+.ex-pg{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px}
+.ex-pg button{background:var(--surf2);border:1px solid var(--bdr);color:var(--t2);
+  border-radius:6px;padding:5px 16px;font-size:12px;cursor:pointer;font-family:inherit}
+.ex-pg button:hover:not(:disabled){background:var(--bdr)}
+.ex-pg button:disabled{opacity:.35;cursor:default}
+.ex-pg span{font-size:12px;color:var(--t3)}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="brand">
+    <div class="logo">AM</div>
+    <div style="min-width:0">
+      <div class="brand-name">AM Group — HR Intelligence</div>
+      <div class="brand-sub">DGM · Human Resources · Recruitment Analytics</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="hdr-meta" id="hdr-meta-count">11,310 candidates</div>
+    <span class="src-badge" id="src-badge">⚪ Sample Data</span>
+    <span class="upd-time" id="upd-time"></span>
+    <button class="refresh-btn" id="refresh-btn" onclick="doRefresh()" title="Refresh data">🔄 Refresh</button>
+    <button class="theme-btn" onclick="toggleTheme()">☀ / ☾</button>
+  </div>
+</header>
+
+<div class="tabs" id="tabBar">
+  <button class="tab-btn active" onclick="sw('ceo',this)">📊 CEO Overview</button>
+  <button class="tab-btn" onclick="sw('hr',this)">🏢 HR Department</button>
+  <button class="tab-btn" onclick="sw('rec',this)">👤 Recruiter</button>
+  <button class="tab-btn" onclick="sw('gender',this)">⚧ Gender</button>
+  <button class="tab-btn" onclick="sw('dist',this)">📍 District</button>
+  <button class="tab-btn" onclick="sw('tat',this)">⏱ TAT</button>
+  <button class="tab-btn" onclick="sw('profile',this)">🎓 Profile</button>
+  <button class="tab-btn" onclick="sw('source',this)">🔗 Source</button>
+  <button class="tab-btn" onclick="sw('explorer',this)">🔍 Data Explorer</button>
+</div>
+
+<!-- ═══ CEO OVERVIEW ═══ -->
+<section id="s-ceo" class="sec active">
+  <div class="sec-hd">
+    <div class="sec-title">Executive Overview</div>
+    <div class="sec-sub">Full recruitment pipeline · AM, Onroad, Beegains & Group companies · Jan–Sep 2026</div>
+  </div>
+  <div class="kpi-row-5">
+    <div class="kpi" style="--ac:var(--indigo)">
+      <div class="kpi-lbl">Total Pipeline</div>
+      <div class="kpi-val">11,310</div>
+      <div class="kpi-note">Candidates tracked YTD</div>
+      <span class="badge bi">9 months</span>
+    </div>
+    <div class="kpi" style="--ac:var(--amber)">
+      <div class="kpi-lbl">Call Connection Rate</div>
+      <div class="kpi-val">78.2%</div>
+      <div class="kpi-note">8,845 of 11,310 connected</div>
+      <span class="badge ba">+2.1% vs target</span>
+    </div>
+    <div class="kpi" style="--ac:var(--teal)">
+      <div class="kpi-lbl">Total Joined</div>
+      <div class="kpi-val">1,611</div>
+      <div class="kpi-note">81.7% of shortlisted</div>
+      <span class="badge bg">Will Join: 113</span>
+    </div>
+    <div class="kpi" style="--ac:var(--rose)">
+      <div class="kpi-lbl">Not Joining</div>
+      <div class="kpi-val">222</div>
+      <div class="kpi-note">11.2% dropout of appts</div>
+      <span class="badge br">Attrition risk</span>
+    </div>
+    <div class="kpi" style="--ac:var(--purple)">
+      <div class="kpi-lbl">End-to-End Conv.</div>
+      <div class="kpi-val">14.2%</div>
+      <div class="kpi-note">Pipeline → Joined</div>
+      <span class="badge bi">Industry avg ~12%</span>
+    </div>
+  </div>
+
+  <div class="g31">
+    <div class="card">
+      <div class="card-title">Monthly Recruitment Volume</div>
+      <div class="card-sub">Calls initiated vs interviews scheduled vs joined · Jan–Aug 2026</div>
+      <div class="cw" style="--ch:220px"><canvas id="trendChart"></canvas></div>
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:#4F63E7"></div>Calls Made</div>
+        <div class="leg"><div class="leg-dot" style="background:#D97706"></div>Interviews</div>
+        <div class="leg"><div class="leg-dot" style="background:#0B9E8F"></div>Joined</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Appointment Outcomes</div>
+      <div class="card-sub">Of 1,973 shortlisted appointments</div>
+      <div class="cw" style="--ch:220px"><canvas id="outcomePie"></canvas></div>
+      <div class="legend" style="margin-top:8px">
+        <div class="leg"><div class="leg-dot" style="background:#0B9E8F"></div>Joined 1,611</div>
+        <div class="leg"><div class="leg-dot" style="background:#D97706"></div>Will Join 113</div>
+        <div class="leg"><div class="leg-dot" style="background:#DC4545"></div>Not Joining 222</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Recruitment Funnel — End-to-End</div>
+      <div class="card-sub">Stage-wise pipeline conversion</div>
+      <div id="funnel" style="padding-top:4px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Division-wise Pipeline vs Joined</div>
+      <div class="card-sub">Candidate inflow vs confirmed hires by division</div>
+      <div class="cw" style="--ch:260px"><canvas id="divChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HR DEPARTMENT ═══ -->
+<section id="s-hr" class="sec">
+  <div class="sec-hd">
+    <div class="sec-title">HR Department Analytics</div>
+    <div class="sec-sub">Candidate profiles, roles in demand, geographic spread · 11,310 tracked</div>
+  </div>
+  <div class="g4">
+    <div class="kpi" style="--ac:var(--amber)">
+      <div class="kpi-lbl">Avg Candidate Age</div>
+      <div class="kpi-val">29 yrs</div>
+      <div class="kpi-note">Largest cohort: 18–25</div>
+    </div>
+    <div class="kpi" style="--ac:var(--indigo)">
+      <div class="kpi-lbl">Male / Female</div>
+      <div class="kpi-val">84/16%</div>
+      <div class="kpi-note">7,431 M · 1,414 F</div>
+    </div>
+    <div class="kpi" style="--ac:var(--teal)">
+      <div class="kpi-lbl">Experienced</div>
+      <div class="kpi-val">4,048</div>
+      <div class="kpi-note">35.8% of pipeline</div>
+    </div>
+    <div class="kpi" style="--ac:var(--rose)">
+      <div class="kpi-lbl">Districts Covered</div>
+      <div class="kpi-val">14+</div>
+      <div class="kpi-note">Primarily Kerala</div>
+    </div>
+  </div>
+
+  <div class="g3">
+    <div class="card">
+      <div class="card-title">Experience Level</div>
+      <div class="card-sub">Candidate profile across pipeline</div>
+      <div class="cw" style="--ch:230px"><canvas id="expChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Age Group Distribution</div>
+      <div class="card-sub">Candidate age bands</div>
+      <div class="cw" style="--ch:230px"><canvas id="ageChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Education Qualification</div>
+      <div class="card-sub">Highest qualification level</div>
+      <div class="cw" style="--ch:230px"><canvas id="eduChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Top Roles in Demand</div>
+      <div class="card-sub">Most recruited designations</div>
+      <div class="cw" style="--ch:280px"><canvas id="roleChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Role-wise Joining Rate</div>
+      <div class="card-sub">Joined ÷ appointments per role (colour = performance)</div>
+      <div class="cw" style="--ch:280px"><canvas id="roleRateChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RECRUITER ═══ -->
+<section id="s-rec" class="sec">
+  <div class="sec-hd">
+    <div class="sec-title">Recruiter Intelligence</div>
+    <div class="sec-sub">Individual performance · conversion · quality · attrition · 10 active recruiters</div>
+  </div>
+  <div class="callout cr">⚠ <strong>Mubashir: 31.1% attrition</strong> — 1 in 3 candidates don't join after shortlisting. Vishnu: 23.5% attrition despite highest volume. <strong>Nihal is the benchmark: 2.5% attrition + 30.9% conversion.</strong></div>
+  <div class="card mb">
+    <div class="card-title">Recruiter Performance Matrix</div>
+    <div class="card-sub">Ranked by conversion rate. Attrition = Not Joining ÷ Appointments.</div>
+    <div class="tbl-wrap"><table class="tbl" id="recTable"></table></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Calls Volume vs Conversion Rate</div>
+      <div class="card-sub">Ideal: top-right quadrant. Low conversion = coaching needed.</div>
+      <div class="cw" style="--ch:280px"><canvas id="recBubble"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Attrition Rate per Recruiter</div>
+      <div class="card-sub">Not Joining ÷ Appointments. Lower is better.</div>
+      <div class="cw" style="--ch:280px"><canvas id="recAttr"></canvas></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Recruiter — Joined vs Not Joining</div>
+      <div class="card-sub">Quality of shortlisting per recruiter</div>
+      <div id="recHbars" style="margin-top:4px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Monthly Call Volume by Recruiter</div>
+      <div class="card-sub">Stacked monthly contribution (top 6)</div>
+      <div class="cw" style="--ch:280px"><canvas id="recMonthly"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GENDER ═══ -->
+<section id="s-gender" class="sec">
+  <div class="sec-hd">
+    <div class="sec-title">Gender Analysis</div>
+    <div class="sec-sub">Male vs Female breakdown across pipeline · joining · roles · divisions</div>
+  </div>
+  <div class="callout ct">✅ <strong>Female join rate (91.6%) is significantly higher than Male (79.8%).</strong> Female candidates who reach the appointment stage are more likely to confirm joining — a signal of higher commitment once shortlisted.</div>
+
+  <div class="kpi-row">
+    <div class="kpi" style="--ac:var(--indigo)">
+      <div class="kpi-lbl">Male Pipeline</div>
+      <div class="kpi-val">7,431</div>
+      <div class="kpi-note">84% of classified pipeline</div>
+      <span class="badge bi">Joined: 1,350</span>
+    </div>
+    <div class="kpi" style="--ac:var(--rose)">
+      <div class="kpi-lbl">Female Pipeline</div>
+      <div class="kpi-val">1,414</div>
+      <div class="kpi-note">16% of classified pipeline</div>
+      <span class="badge br">Joined: 261</span>
+    </div>
+    <div class="kpi" style="--ac:var(--indigo)">
+      <div class="kpi-lbl">Male Join Rate</div>
+      <div class="kpi-val">79.8%</div>
+      <div class="kpi-note">Of male appointments</div>
+      <span class="badge bi">Not Joining: 187</span>
+    </div>
+    <div class="kpi" style="--ac:var(--rose)">
+      <div class="kpi-lbl">Female Join Rate</div>
+      <div class="kpi-val">91.6%</div>
+      <div class="kpi-note">Of female appointments</div>
+      <span class="badge br">Not Joining: 35</span>
+    </div>
+  </div>
+
+  <div class="card mb">
+    <div class="card-title">Overall Gender Split — Pipeline</div>
+    <div class="card-sub">84% Male · 16% Female (of 8,845 classified candidates)</div>
+    <div class="gender-split" style="margin-top:10px">
+      <div class="gs-male" style="width:84%">♂ Male 84% — 7,431</div>
+      <div class="gs-female" style="width:16%">♀ 16%</div>
+    </div>
+    <div class="gender-split" style="margin-top:5px">
+      <div class="gs-male" style="width:83.8%;background:#4F63E7">♂ Joined 83.8% — 1,350</div>
+      <div class="gs-female" style="width:16.2%;background:#DC4545">♀ 16.2%</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Gender-wise Joining Outcome</div>
+      <div class="card-sub">Joined · Will Join · Not Joining split by gender</div>
+      <div class="cw" style="--ch:240px"><canvas id="genderOutcome"></canvas></div>
+      <div class="legend"><div class="leg"><div class="leg-dot" style="background:#0B9E8F"></div>Joined</div><div class="leg"><div class="leg-dot" style="background:#D97706"></div>Will Join</div><div class="leg"><div class="leg-dot" style="background:#DC4545"></div>Not Joining</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Division-wise Gender Distribution</div>
+      <div class="card-sub">Male vs Female candidates across business divisions</div>
+      <div class="cw" style="--ch:240px"><canvas id="divGender"></canvas></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Role-wise Gender Split</div>
+      <div class="card-sub">Male vs Female across top 8 roles</div>
+      <div id="roleGenderBars" style="margin-top:4px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Source-wise Gender Mix</div>
+      <div class="card-sub">Where male and female candidates come from</div>
+      <div class="cw" style="--ch:280px"><canvas id="srcGender"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DISTRICT ═══ -->
+<section id="s-dist" class="sec">
+  <div class="sec-hd">
+    <div class="sec-title">District-wise Analysis</div>
+    <div class="sec-sub">Geographic distribution of pipeline · joining rates · concentration risk</div>
+  </div>
+  <div class="callout ca">📍 <strong>Malappuram = 30.2% of total pipeline</strong> — high concentration risk. Kozhikode follows at 14.7%. Thrissur and Ernakulam show potential to scale. Only 3 districts contribute 62% of all candidates.</div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">District Pipeline Volume</div>
+      <div class="card-sub">Total candidates tracked by home district</div>
+      <div class="cw" style="--ch:320px"><canvas id="districtBarChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">District-wise Joining Rate</div>
+      <div class="card-sub">Joined ÷ appointments per district (top 10)</div>
+      <div id="distJoinBars" style="margin-top:4px"></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Branch-wise Joined vs Not Joining (Top 10)</div>
+      <div class="card-sub">Stacked outcome per branch</div>
+      <div id="branchBars" style="margin-top:4px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Division × District Mix</div>
+      <div class="card-sub">Which divisions draw from which districts</div>
+      <div class="cw" style="--ch:280px"><canvas id="distDivChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TAT ═══ -->
+<section id="s-tat" class="sec">
+  <div class="sec-hd">
+    <div class="sec-title">TAT — Turnaround Time Analysis</div>
+    <div class="sec-sub">Call date → Interview date → Selection date · Speed of hiring pipeline</div>
+  </div>
+  <div class="callout ct">⏱ <strong>Average call-to-join takes 18 days.</strong> Freshers join fastest (avg 13 days). Experienced candidates take 22 days (notice periods). Recruiter Nihal has the fastest pipeline at avg 15 days call-to-selection.</div>
+
+  <div class="tat-grid">
+    <div class="tat-card" style="border-top:3px solid var(--indigo)">
+      <div class="tat-num">5.2</div>
+      <div class="tat-unit">days avg</div>
+      <div class="tat-lbl">Call → Interview Scheduled</div>
+    </div>
+    <div class="tat-card" style="border-top:3px solid var(--amber)">
+      <div class="tat-num">3.8</div>
+      <div class="tat-unit">days avg</div>
+      <div class="tat-lbl">Interview → Selection Decision</div>
+    </div>
+    <div class="tat-card" style="border-top:3px solid var(--teal)">
+      <div class="tat-num">9.1</div>
+      <div class="tat-unit">days avg</div>
+      <div class="tat-lbl">Selection → Actual Joining</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">TAT by Recruiter — Call to Selection</div>
+      <div class="card-sub">Average days from first call to selection decision (lower = faster)</div>
+      <div id="tatRecBars" style="margin-top:4px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Monthly Avg TAT Trend</div>
+      <div class="card-sub">Call-to-selection days per month (Jan–Aug)</div>
+      <div class="cw" style="--ch:260px"><canvas id="tatMonthly"></canvas></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">TAT by Experience Type</div>
+      <div class="card-sub">Who moves fastest through the pipeline?</div>
+      <div id="tatExpBars" style="margin-top:4px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">TAT by Division</div>
+      <div class="card-sub">Average days from call to joining per division</div>
+      <div id="tatDivBars" style="margin-top:4px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROFILE ═══ -->
+<section id="s-profile" class="sec">
+  <div class="sec-hd">
+    <div class="sec-title">Candidate Profile Deep Dive</div>
+    <div class="sec-sub">Experience type joining speed · age-wise patterns · salary bands · education</div>
+  </div>
+  <div class="callout ci">🎓 <strong>Freshers (26.9%) join fastest</strong> — avg 13 days from selection. Experienced candidates (35.8%) take longest but have higher offer acceptance. Master/Senior graduates have lowest attrition once joined.</div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Experience Type — Who Joins Fastest?</div>
+      <div class="card-sub">Avg days from selection to joining by experience level</div>
+      <div class="cw" style="--ch:230px"><canvas id="expSpeedChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Experience-wise Joining Outcome</div>
+      <div class="card-sub">Joined · Will Join · Not Joining split by experience type</div>
+      <div id="expOutcomeBars" style="margin-top:4px"></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Age-wise Joining Rate</div>
+      <div class="card-sub">Which age group has highest confirmation rate?</div>
+      <div class="cw" style="--ch:230px"><canvas id="ageJoinChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Age Group — Joining Outcome</div>
+      <div class="card-sub">Joined vs Not Joining per age band</div>
+      <div id="ageOutcomeBars" style="margin-top:4px"></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Salary Band Distribution (Joined Candidates)</div>
+      <div class="card-sub">Monthly salary offered to 1,611 confirmed hires</div>
+      <div class="cw" style="--ch:230px"><canvas id="salaryChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Age-wise Source Channel</div>
+      <div class="card-sub">Which sources attract which age groups</div>
+      <div class="cw" style="--ch:230px"><canvas id="ageSrcChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SOURCE ═══ -->
+<section id="s-source" class="sec">
+  <div class="sec-hd">
+    <div class="sec-title">Source Intelligence</div>
+    <div class="sec-sub">Channel quality · volume · shortlisting rate · ROI comparison</div>
+  </div>
+  <div class="callout ct">✅ <strong>Employee Referral converts at 54.6%</strong> — nearly 4× the 14.3% rate of HR Leads (which makes up 40.5% of volume). Scaling referrals is the single highest-ROI action available.</div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Source Volume Distribution</div>
+      <div class="card-sub">Candidates sourced per channel</div>
+      <div class="cw" style="--ch:260px"><canvas id="srcVolPie"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Source Quality — Shortlisting Rate</div>
+      <div class="card-sub">% shortlisted per source (higher = better quality leads)</div>
+      <div id="srcQualList" style="margin-top:4px"></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Volume vs Quality Matrix</div>
+      <div class="card-sub">Size = volume · Y = shortlisting rate. Best = top-right.</div>
+      <div class="cw" style="--ch:280px"><canvas id="srcBubble"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Source-wise Joining Outcome</div>
+      <div class="card-sub">Joined vs Not Joining per source channel</div>
+      <div id="srcJoinBars" style="margin-top:4px"></div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ── DATA ────────────────────────────────────────
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+const C={amber:'#D97706',teal:'#0B9E8F',indigo:'#4F63E7',rose:'#DC4545',purple:'#7C3AED',cyan:'#0EA5A0',grey:'#8895AA'};
+const SER=[C.amber,C.teal,C.indigo,C.rose,C.purple,C.cyan,C.grey];
+
+const D={
+  calls:    [1793,1406,1254,853,1466,1563,1686,1272],
+  ints:     [793,701,506,552,791,979,972,704],
+  joined:   [39,70,44,59,55,72,62,40],
+  notJoin:  [1,6,9,6,3,9,17,3],
+
+  divisions:{
+    Arena:      {pipeline:3068,joined:477,not_j:100,will_j:44},
+    Service:    {pipeline:2913,joined:580,not_j:53, will_j:29},
+    Nexa:       {pipeline:938, joined:236,not_j:41, will_j:25},
+    PDI:        {pipeline:204, joined:67, not_j:3,  will_j:2},
+    'True Value':{pipeline:167,joined:40, not_j:8,  will_j:5},
+  },
+
+  recruiters:[
+    {name:'Nihal',   calls:1029,appts:318,joined:305,not_j:8, will_j:5, crate:30.9,jrate:95.9,attr:2.5,  tatDays:15},
+    {name:'Vishnu',  calls:1341,appts:264,joined:192,not_j:62,will_j:9, crate:19.7,jrate:72.7,attr:23.5, tatDays:19},
+    {name:'Shibila', calls:1330,appts:240,joined:215,not_j:19,will_j:5, crate:18.0,jrate:89.6,attr:7.9,  tatDays:16},
+    {name:'Dilruba', calls:1269,appts:229,joined:191,not_j:30,will_j:7, crate:18.0,jrate:83.4,attr:13.1, tatDays:18},
+    {name:'Vahid',   calls:1236,appts:209,joined:188,not_j:16,will_j:5, crate:16.9,jrate:90.0,attr:7.7,  tatDays:17},
+    {name:'Vishnu T',calls:849, appts:145,joined:110,not_j:20,will_j:15,crate:17.1,jrate:75.9,attr:13.8, tatDays:20},
+    {name:'Suhail',  calls:1254,appts:177,joined:123,not_j:26,will_j:18,crate:14.1,jrate:69.5,attr:14.7, tatDays:21},
+    {name:'Mubashir',calls:323, appts:45, joined:16, not_j:14,will_j:5, crate:13.9,jrate:35.6,attr:31.1, tatDays:25},
+    {name:'Rinsha',  calls:1170,appts:98, joined:85, not_j:8, will_j:4, crate:8.4, jrate:86.7,attr:8.2,  tatDays:17},
+    {name:'Fajil',   calls:411, appts:40, joined:40, not_j:0, will_j:0, crate:9.7, jrate:100, attr:0.0,  tatDays:14},
+  ],
+
+  recMonthly:{
+    Vishnu:   [332,211,161,115,163,107,64,188],
+    Shibila:  [190,141,87,99,176,349,170,118],
+    Dilruba:  [231,115,161,89,117,200,294,59],
+    Vahid:    [258,173,177,108,196,145,155,24],
+    Rinsha:   [256,191,135,107,185,89,147,57],
+    Suhail:   [0,204,237,123,276,222,146,46],
+  },
+
+  sources:[
+    {name:'HR Leads',       total:4576,sl:653, joined:298,not_j:52,  color:C.grey},
+    {name:'Employee Ref',   total:1323,sl:723, joined:520,not_j:18,  color:C.teal},
+    {name:'Phone',          total:1815,sl:543, joined:390,not_j:62,  color:C.amber},
+    {name:'Social Media',   total:789, sl:192, joined:128,not_j:28,  color:C.rose},
+    {name:'Job Consultancy',total:104, sl:35,  joined:26, not_j:5,   color:C.indigo},
+    {name:'Field Data',     total:128, sl:45,  joined:38, not_j:4,   color:C.purple},
+    {name:'LinkedIn',       total:48,  sl:7,   joined:5,  not_j:1,   color:C.cyan},
+  ],
+
+  genderDiv:{Arena:{M:2608,F:460},Service:{M:2274,F:639},Nexa:{M:844,F:94},PDI:{M:192,F:12},'True Value':{M:150,F:17}},
+  genderSrc:{'HR Leads':{M:3886,F:690},'Employee Ref':{M:1125,F:198},'Phone':{M:1543,F:272},'Social Media':{M:671,F:118},'Other':{M:206,F:136}},
+  roleGender:{
+    'Sales Exec': {M:205,F:9},'Rel. Mgr':{M:180,F:25},'CCE':{M:46,F:69},
+    'Painter':{M:97,F:2},'Mechanic':{M:80,F:0},'Driver':{M:76,F:0},
+    'Accountant':{M:28,F:26},'Washing':{M:45,F:13},
+  },
+
+  districts:[
+    {name:'Malappuram',pipeline:3420,joined:270,not_j:30},
+    {name:'Kozhikode', pipeline:1660,joined:198,not_j:22},
+    {name:'Thrissur',  pipeline:1360,joined:145,not_j:18},
+    {name:'Palakkad',  pipeline:1146,joined:132,not_j:14},
+    {name:'Ernakulam', pipeline:413, joined:56, not_j:8},
+    {name:'Other St.', pipeline:186, joined:30, not_j:3},
+    {name:'Kannur',    pipeline:161, joined:28, not_j:2},
+    {name:'Wayanad',   pipeline:83,  joined:14, not_j:1},
+    {name:'Alappuzha', pipeline:89,  joined:11, not_j:2},
+    {name:'Kottayam',  pipeline:62,  joined:9,  not_j:1},
+  ],
+
+  branches:[
+    {name:'Malappuram',joined:270,not_j:30},{name:'Feroke',    joined:61, not_j:4},
+    {name:'Kunnamkulam',joined:55,not_j:6},{name:'Viyyur',     joined:45, not_j:6},
+    {name:'Pattambi',  joined:43, not_j:10},{name:'Kochi',     joined:44, not_j:7},
+    {name:'Calicut',   joined:41, not_j:1},{name:'Ponnani',    joined:30, not_j:12},
+    {name:'Pilakkal',  joined:34, not_j:1},{name:'Koduvally',  joined:27, not_j:0},
+  ],
+
+  expResult:[
+    {type:'Fresher',     joined:402,not_j:49,will_j:22,tatDays:13},
+    {type:'Experienced', joined:256,not_j:31,will_j:42,tatDays:22},
+    {type:'Intermediate',joined:297,not_j:45,will_j:20,tatDays:16},
+    {type:'Master',      joined:43, not_j:2, will_j:2, tatDays:11},
+    {type:'Senior',      joined:11, not_j:2, will_j:1, tatDays:18},
+  ],
+
+  ageGroups:[
+    {band:'18–25',pipeline:3695,joined:412,not_j:38,tatDays:11},
+    {band:'26–30',pipeline:2333,joined:498,not_j:62,tatDays:15},
+    {band:'31–35',pipeline:1241,joined:320,not_j:54,tatDays:19},
+    {band:'36–40',pipeline:744, joined:198,not_j:42,tatDays:22},
+    {band:'41+',  pipeline:825, joined:183,not_j:26,tatDays:25},
+  ],
+
+  tatMonthly:[9.2,8.5,9.8,10.2,8.1,7.6,8.8,9.1],
+  tatDiv:{Arena:20,Service:16,Nexa:18,PDI:13,'True Value':15},
+
+  roles:[
+    {name:'Sales Exec',  joined:139,not_j:47,will_j:16,total:214},
+    {name:'Rel. Mgr',    joined:156,not_j:32,will_j:16,total:205},
+    {name:'CCE',         joined:100,not_j:11,will_j:4, total:115},
+    {name:'Painter',     joined:89, not_j:6, will_j:4, total:99},
+    {name:'Mechanic',    joined:70, not_j:3, will_j:7, total:81},
+    {name:'Driver',      joined:67, not_j:6, will_j:3, total:76},
+    {name:'Washing',     joined:57, not_j:0, will_j:1, total:58},
+    {name:'Accountant',  joined:49, not_j:2, will_j:3, total:54},
+  ],
+
+  salary:{'<10K':89,'10–15K':772,'15–20K':703,'20–30K':272,'30–50K':71,'50K+':5},
+  edu:{labels:['Degree','Plus Two','Diploma','SSLC','ITI','PG','MBA','B.Tech'],values:[2725,1991,1334,942,908,348,335,225]},
+};
+
+// ── CORE ────────────────────────────────────────
+const charts={};
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function toggleTheme(){
+  const d=document.documentElement;
+  d.setAttribute('data-theme',d.getAttribute('data-theme')==='dark'?'light':'dark');
+  setTimeout(buildAll,60);
+}
+function sw(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  btn.classList.add('active');
+  btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  setTimeout(()=>Object.values(charts).forEach(ch=>{if(ch&&ch.resize)ch.resize()}),50);
+}
+
+// ── HELPERS ────────────────────────────────────────
+function al(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`}
+function gr(){return{grid:css('--bdr'),text:css('--t3'),t1:css('--t1')}}
+function surf(){return css('--surf')||'#132338'}
+function bp(){return{legend:{display:false},tooltip:{backgroundColor:surf(),titleColor:css('--t1'),bodyColor:css('--t2'),padding:10,cornerRadius:6,titleFont:{family:"'Plus Jakarta Sans',sans-serif",weight:'700',size:12},bodyFont:{family:"'Inter',sans-serif",size:12}}}}
+function scOpt(g){return{grid:{color:g.grid,drawBorder:false},ticks:{color:g.text,font:{family:"'Inter'",size:11}},border:{display:false}}}
+function noGrid(g){return{...scOpt(g),grid:{display:false}}}
+function dc(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
+
+// ── FUNNEL ────────────────────────────────────────
+function buildFunnel(){
+  const stages=[
+    {lbl:'Total Pipeline',n:11310,c:C.indigo},{lbl:'Calls Connected',n:8845,c:C.purple},
+    {lbl:'Interview Planned',n:6024,c:C.amber},{lbl:'Shortlisted',n:2231,c:C.teal},
+    {lbl:'Appointments',n:1973,c:C.cyan},{lbl:'Confirmed Joined',n:1611,c:'#059669'},
+  ];
+  const max=stages[0].n;
+  document.getElementById('funnel').innerHTML=stages.map((s,i)=>`
+    <div class="fn-row">
+      <div class="fn-meta">
+        <div class="fn-num">${s.n.toLocaleString()}</div>
+        <div class="fn-lbl">${s.lbl}</div>
+        ${i>0?`<div class="fn-pct">${((s.n/stages[i-1].n)*100).toFixed(0)}% of above</div>`:''}
+      </div>
+      <div class="fn-bar-bg"><div class="fn-bar" style="width:${((s.n/max)*100).toFixed(0)}%;background:${s.c}">${((s.n/max)*100).toFixed(0)}%</div></div>
+    </div>
+    ${i<stages.length-1?'<div style="padding-left:128px;margin-bottom:2px;color:var(--bdr)">▼</div>':''}
+  `).join('');
+}
+
+// ── H-BARS ────────────────────────────────────────
+function hbars(elId,rows,maxVal,withRate){
+  const el=document.getElementById(elId);if(!el)return;
+  el.innerHTML=rows.map(r=>{
+    const tot=r.joined+(r.not_j||0)+(r.will_j||0);
+    const mx=maxVal||tot;
+    const jW=((r.joined/mx)*100).toFixed(1);
+    const wW=(((r.will_j||0)/mx)*100).toFixed(1);
+    const nW=(((r.not_j||0)/mx)*100).toFixed(1);
+    const rate=((r.joined/tot)*100).toFixed(0);
+    const lbl=r.name||r.type||r.band||'';
+    return `<div class="hb-row">
+      <div class="hb-lbl" title="${lbl}">${lbl}</div>
+      <div class="hb-track">
+        <div class="hb-seg" style="width:${jW}%;background:${C.teal}">${r.joined>30?r.joined:''}</div>
+        ${r.will_j?`<div class="hb-seg" style="width:${wW}%;background:${C.amber}"></div>`:''}
+        ${r.not_j?`<div class="hb-seg" style="width:${nW}%;background:${C.rose}"></div>`:''}
+      </div>
+      <div class="hb-val">${tot}</div>
+      ${withRate!==false?`<div class="hb-rate">${rate}%</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ── RECRUITER TABLE ────────────────────────────────────────
+function buildRecTable(){
+  const el=document.getElementById('recTable');if(!el)return;
+  const s=[...D.recruiters].sort((a,b)=>b.crate-a.crate);
+  const maxC=Math.max(...s.map(r=>r.calls));
+  const maxA=Math.max(...s.map(r=>r.appts));
+  const rC=i=>['r1','r2','r3'][i]||'rn';
+  const atrCls=a=>a<10?'bg':a<20?'ba':'br';
+  const jrCls=j=>j>=85?'bg':j>=70?'ba':'br';
+  el.innerHTML=`<thead><tr>
+    <th>Recruiter</th><th class="r">Calls</th><th class="r">Appts</th><th class="r">Joined</th>
+    <th class="r">Conv%</th><th class="r">Join Rate%</th><th class="r">Attrition%</th><th class="r">Avg TAT</th>
+  </tr></thead><tbody>${s.map((r,i)=>`<tr>
+    <td><span class="rank ${rC(i)}">${i+1}</span><span class="tn">${r.name}</span></td>
+    <td class="r">${r.calls.toLocaleString()}<div class="mini-bg"><div class="mini-fill" style="width:${(r.calls/maxC*100).toFixed(0)}%;background:${C.indigo}"></div></div></td>
+    <td class="r">${r.appts}<div class="mini-bg"><div class="mini-fill" style="width:${(r.appts/maxA*100).toFixed(0)}%;background:${C.teal}"></div></div></td>
+    <td class="r">${r.joined}</td>
+    <td class="r"><span class="badge ba">${r.crate}%</span></td>
+    <td class="r"><span class="badge ${jrCls(r.jrate)}">${r.jrate}%</span></td>
+    <td class="r"><span class="badge ${atrCls(r.attr)}">${r.attr}%</span></td>
+    <td class="r" style="color:var(--t3)">${r.tatDays}d</td>
+  </tr>`).join('')}</tbody>`;
+}
+
+function buildSrcList(){
+  const el=document.getElementById('srcQualList');if(!el)return;
+  const mx=Math.max(...D.sources.map(s=>s.total));
+  const sorted=[...D.sources].sort((a,b)=>(b.sl/b.total)-(a.sl/a.total));
+  el.innerHTML=sorted.map(s=>{
+    const rate=(s.sl/s.total*100).toFixed(1);
+    const cls=rate>=40?'ph':rate>=25?'pm':'pl';
+    return `<div class="src-row">
+      <div class="src-dot" style="background:${s.color}"></div>
+      <div class="src-name">${s.name} <span style="color:var(--t3);font-size:10px">(${s.total.toLocaleString()})</span></div>
+      <div class="src-bar-bg"><div class="src-bar-fill" style="width:${(s.total/mx*100).toFixed(0)}%;background:${s.color}"></div></div>
+      <span class="src-pill ${cls}">${rate}%</span>
+    </div>`;
+  }).join('');
+}
+
+function buildSrcJoin(){
+  const el=document.getElementById('srcJoinBars');if(!el)return;
+  el.innerHTML=D.sources.map(s=>{
+    const tot=s.joined+s.not_j;
+    const jW=((s.joined/tot)*100).toFixed(1);
+    const nW=((s.not_j/tot)*100).toFixed(1);
+    return `<div class="hb-row">
+      <div class="hb-lbl" title="${s.name}">${s.name}</div>
+      <div class="hb-track">
+        <div class="hb-seg" style="width:${jW}%;background:${C.teal}">${s.joined>30?s.joined:''}</div>
+        <div class="hb-seg" style="width:${nW}%;background:${C.rose}"></div>
+      </div>
+      <div class="hb-val">${tot}</div>
+      <div class="hb-rate">${jW}%</div>
+    </div>`;
+  }).join('');
+}
+
+function buildDistJoin(){
+  const rows=D.districts.map(d=>({name:d.name,joined:d.joined,not_j:d.not_j,will_j:0}));
+  const mx=Math.max(...rows.map(r=>r.joined+r.not_j));
+  hbars('distJoinBars',rows,mx);
+}
+function buildBranchBars(){
+  const rows=D.branches.map(b=>({name:b.name,joined:b.joined,not_j:b.not_j,will_j:0}));
+  const mx=Math.max(...rows.map(r=>r.joined+r.not_j));
+  hbars('branchBars',rows,mx);
+}
+function buildRoleGender(){
+  const el=document.getElementById('roleGenderBars');if(!el)return;
+  el.innerHTML=Object.entries(D.roleGender).map(([role,g])=>{
+    const tot=g.M+g.F;
+    const mW=((g.M/tot)*100).toFixed(1);
+    const fW=((g.F/tot)*100).toFixed(1);
+    return `<div class="hb-row">
+      <div class="hb-lbl" title="${role}">${role}</div>
+      <div class="hb-track">
+        <div class="hb-seg" style="width:${mW}%;background:${C.indigo}">${g.M>40?g.M:''}</div>
+        <div class="hb-seg" style="width:${fW}%;background:${C.rose}">${g.F>10?g.F:''}</div>
+      </div>
+      <div class="hb-val">${tot}</div>
+      <div class="hb-rate">${mW}%M</div>
+    </div>`;
+  }).join('');
+}
+
+function buildTatRec(){
+  const el=document.getElementById('tatRecBars');if(!el)return;
+  const sorted=[...D.recruiters].sort((a,b)=>a.tatDays-b.tatDays);
+  const mx=Math.max(...sorted.map(r=>r.tatDays));
+  el.innerHTML=sorted.map(r=>{
+    const w=((r.tatDays/mx)*100).toFixed(0);
+    const col=r.tatDays<=15?C.teal:r.tatDays<=19?C.amber:C.rose;
+    return `<div class="tat-bar-row">
+      <div class="tat-name">${r.name}</div>
+      <div class="tat-bar-bg"><div class="tat-bar-fill" style="width:${w}%;background:${col}">${r.tatDays}d</div></div>
+      <div class="tat-val">${r.tatDays}d</div>
+    </div>`;
+  }).join('');
+}
+function buildTatExp(){
+  const el=document.getElementById('tatExpBars');if(!el)return;
+  const mx=Math.max(...D.expResult.map(e=>e.tatDays));
+  el.innerHTML=D.expResult.map(e=>{
+    const w=((e.tatDays/mx)*100).toFixed(0);
+    const col=e.tatDays<=13?C.teal:e.tatDays<=18?C.amber:C.rose;
+    return `<div class="tat-bar-row">
+      <div class="tat-name">${e.type}</div>
+      <div class="tat-bar-bg"><div class="tat-bar-fill" style="width:${w}%;background:${col}">${e.tatDays}d avg</div></div>
+      <div class="tat-val">${e.tatDays}d</div>
+    </div>`;
+  }).join('');
+}
+function buildTatDiv(){
+  const el=document.getElementById('tatDivBars');if(!el)return;
+  const mx=Math.max(...Object.values(D.tatDiv));
+  el.innerHTML=Object.entries(D.tatDiv).map(([div,days])=>{
+    const w=((days/mx)*100).toFixed(0);
+    const col=days<=15?C.teal:days<=19?C.amber:C.rose;
+    return `<div class="tat-bar-row">
+      <div class="tat-name">${div}</div>
+      <div class="tat-bar-bg"><div class="tat-bar-fill" style="width:${w}%;background:${col}">${days}d avg</div></div>
+      <div class="tat-val">${days}d</div>
+    </div>`;
+  }).join('');
+}
+
+// ══ BUILD ALL CHARTS ═══════════════════════════════════
+function buildAll(){
+  const g=gr();const bpl=bp();const sc=scOpt(g);const ng=noGrid(g);
+  const legOpts={display:true,labels:{color:g.text,font:{size:11,family:"'Inter'"},usePointStyle:true,boxWidth:8}};
+
+  dc('trendChart');
+  charts.trendChart=new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:MONTHS,datasets:[
+    {label:'Calls Made',data:D.calls,borderColor:C.indigo,backgroundColor:al(C.indigo,.08),fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2},
+    {label:'Interviews',data:D.ints,borderColor:C.amber,backgroundColor:al(C.amber,.06),fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2,borderDash:[5,3]},
+    {label:'Joined',data:D.joined,borderColor:C.teal,backgroundColor:'transparent',tension:.35,pointRadius:4,pointHoverRadius:6,borderWidth:2.5},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:bpl,scales:{x:ng,y:sc}}});
+
+  dc('outcomePie');
+  charts.outcomePie=new Chart(document.getElementById('outcomePie'),{type:'doughnut',data:{labels:['Joined','Will Join','Not Joining'],datasets:[{data:[1611,113,222],backgroundColor:[C.teal,C.amber,C.rose],borderWidth:2,borderColor:surf()}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{...bpl,legend:{display:false}}}});
+
+  dc('divChart');
+  const divNames=Object.keys(D.divisions);
+  charts.divChart=new Chart(document.getElementById('divChart'),{type:'bar',data:{labels:divNames,datasets:[
+    {label:'Pipeline',data:divNames.map(d=>D.divisions[d].pipeline),backgroundColor:al(C.indigo,.7),borderRadius:4},
+    {label:'Joined',data:divNames.map(d=>D.divisions[d].joined),backgroundColor:al(C.teal,.85),borderRadius:4},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:legOpts},scales:{x:ng,y:sc}}});
+
+  dc('expChart');
+  charts.expChart=new Chart(document.getElementById('expChart'),{type:'doughnut',data:{labels:['Experienced','Fresher','Intermediate','Master','Senior'],datasets:[{data:[4048,3047,1585,117,48],backgroundColor:SER,borderWidth:2,borderColor:surf()}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{...bpl,legend:{...legOpts,position:'right'}}}});
+
+  dc('ageChart');
+  charts.ageChart=new Chart(document.getElementById('ageChart'),{type:'bar',data:{labels:['18–25','26–30','31–35','36–40','41+'],datasets:[{data:[3695,2333,1241,744,825],backgroundColor:SER.map(c=>al(c,.8)),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:bpl,scales:{x:ng,y:sc}}});
+
+  dc('eduChart');
+  charts.eduChart=new Chart(document.getElementById('eduChart'),{type:'bar',data:{labels:D.edu.labels,datasets:[{data:D.edu.values,backgroundColor:al(C.amber,.8),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:bpl,scales:{x:ng,y:sc}}});
+
+  dc('roleChart');
+  charts.roleChart=new Chart(document.getElementById('roleChart'),{type:'bar',data:{labels:D.roles.map(r=>r.name),datasets:[{data:D.roles.map(r=>r.total),backgroundColor:SER.map(c=>al(c,.8)),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:bpl,scales:{x:sc,y:ng}}});
+
+  dc('roleRateChart');
+  const rates=D.roles.map(r=>((r.joined/r.total)*100).toFixed(1));
+  charts.roleRateChart=new Chart(document.getElementById('roleRateChart'),{type:'bar',data:{labels:D.roles.map(r=>r.name),datasets:[{data:rates,backgroundColor:rates.map(v=>v>=85?al(C.teal,.8):v>=75?al(C.amber,.8):al(C.rose,.8)),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{...bpl,tooltip:{...bpl.tooltip,callbacks:{label:ctx=>`${ctx.raw}% join rate`}}},scales:{x:{...sc,min:50,max:105,ticks:{...sc.ticks,callback:v=>v+'%'}},y:ng}}});
+
+  dc('recBubble');
+  charts.recBubble=new Chart(document.getElementById('recBubble'),{type:'bubble',data:{datasets:D.recruiters.map((r,i)=>({label:r.name,data:[{x:r.calls,y:r.crate,r:Math.max(6,r.appts/12)}],backgroundColor:al(SER[i%SER.length],.7),borderColor:SER[i%SER.length],borderWidth:1}))},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:{...legOpts,position:'right'}},scales:{x:{...sc,title:{display:true,text:'Calls Volume',color:g.text}},y:{...sc,title:{display:true,text:'Conversion %',color:g.text},ticks:{...sc.ticks,callback:v=>v+'%'}}}}});
+
+  dc('recAttr');
+  const rSorted=[...D.recruiters].sort((a,b)=>b.attr-a.attr);
+  charts.recAttr=new Chart(document.getElementById('recAttr'),{type:'bar',data:{labels:rSorted.map(r=>r.name),datasets:[{data:rSorted.map(r=>r.attr),backgroundColor:rSorted.map(r=>r.attr<10?al(C.teal,.8):r.attr<20?al(C.amber,.8):al(C.rose,.8)),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,tooltip:{...bpl.tooltip,callbacks:{label:ctx=>`${ctx.raw}% attrition`}}},scales:{x:ng,y:{...sc,ticks:{...sc.ticks,callback:v=>v+'%'}}}}});
+
+  dc('recMonthly');
+  charts.recMonthly=new Chart(document.getElementById('recMonthly'),{type:'bar',data:{labels:MONTHS,datasets:Object.entries(D.recMonthly).map(([name,vals],i)=>({label:name,data:vals,backgroundColor:al(SER[i],.8),stack:'s',borderRadius:2}))},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:legOpts},scales:{x:ng,y:sc}}});
+
+  dc('genderOutcome');
+  charts.genderOutcome=new Chart(document.getElementById('genderOutcome'),{type:'bar',data:{labels:['Male','Female'],datasets:[
+    {label:'Joined',data:[1350,261],backgroundColor:al(C.teal,.8),stack:'s',borderRadius:2},
+    {label:'Will Join',data:[85,28],backgroundColor:al(C.amber,.8),stack:'s'},
+    {label:'Not Joining',data:[187,35],backgroundColor:al(C.rose,.8),stack:'s'},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:legOpts},scales:{x:ng,y:sc}}});
+
+  dc('divGender');
+  const divKeys=Object.keys(D.genderDiv);
+  charts.divGender=new Chart(document.getElementById('divGender'),{type:'bar',data:{labels:divKeys,datasets:[
+    {label:'Male',data:divKeys.map(d=>D.genderDiv[d].M),backgroundColor:al(C.indigo,.8),borderRadius:3},
+    {label:'Female',data:divKeys.map(d=>D.genderDiv[d].F),backgroundColor:al(C.rose,.8),borderRadius:3},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:legOpts},scales:{x:ng,y:sc}}});
+
+  dc('srcGender');
+  const srcKeys=Object.keys(D.genderSrc);
+  charts.srcGender=new Chart(document.getElementById('srcGender'),{type:'bar',data:{labels:srcKeys,datasets:[
+    {label:'Male',data:srcKeys.map(k=>D.genderSrc[k].M),backgroundColor:al(C.indigo,.8),stack:'s',borderRadius:2},
+    {label:'Female',data:srcKeys.map(k=>D.genderSrc[k].F),backgroundColor:al(C.rose,.8),stack:'s'},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:legOpts},scales:{x:ng,y:sc}}});
+
+  dc('districtBarChart');
+  charts.districtBarChart=new Chart(document.getElementById('districtBarChart'),{type:'bar',data:{labels:D.districts.map(d=>d.name),datasets:[
+    {label:'Pipeline',data:D.districts.map(d=>d.pipeline),backgroundColor:al(C.indigo,.7),borderRadius:4},
+    {label:'Joined',data:D.districts.map(d=>d.joined),backgroundColor:al(C.teal,.85),borderRadius:4},
+  ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:legOpts},scales:{x:sc,y:ng}}});
+
+  dc('distDivChart');
+  const topDist=['Malappuram','Kozhikode','Thrissur','Palakkad','Ernakulam'];
+  const divArr=['Arena','Service','Nexa','PDI','True Value'];
+  const distDivData={Arena:[1280,672,540,388,108],Service:[1130,589,462,412,86],Nexa:[645,282,198,214,100],PDI:[182,58,98,84,18],'True Value':[67,42,52,38,12]};
+  charts.distDivChart=new Chart(document.getElementById('distDivChart'),{type:'bar',data:{labels:topDist,datasets:divArr.map((d,i)=>({label:d,data:distDivData[d],backgroundColor:al(SER[i],.8),stack:'s',borderRadius:2}))},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:legOpts},scales:{x:ng,y:sc}}});
+
+  dc('tatMonthly');
+  charts.tatMonthly=new Chart(document.getElementById('tatMonthly'),{type:'line',data:{labels:MONTHS,datasets:[{label:'Avg TAT (days)',data:D.tatMonthly,borderColor:C.amber,backgroundColor:al(C.amber,.1),fill:true,tension:.4,pointRadius:4,pointHoverRadius:7,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,tooltip:{...bpl.tooltip,callbacks:{label:ctx=>`${ctx.raw} days`}}},scales:{x:ng,y:{...sc,ticks:{...sc.ticks,callback:v=>v+'d'}}}}});
+
+  dc('expSpeedChart');
+  charts.expSpeedChart=new Chart(document.getElementById('expSpeedChart'),{type:'bar',data:{labels:D.expResult.map(e=>e.type),datasets:[{data:D.expResult.map(e=>e.tatDays),backgroundColor:D.expResult.map(e=>e.tatDays<=13?al(C.teal,.8):e.tatDays<=18?al(C.amber,.8):al(C.rose,.8)),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,tooltip:{...bpl.tooltip,callbacks:{label:ctx=>`${ctx.raw} days avg`}}},scales:{x:ng,y:{...sc,ticks:{...sc.ticks,callback:v=>v+'d'}}}}});
+
+  dc('ageJoinChart');
+  const ageJR=D.ageGroups.map(a=>((a.joined/(a.joined+a.not_j))*100).toFixed(1));
+  charts.ageJoinChart=new Chart(document.getElementById('ageJoinChart'),{type:'bar',data:{labels:D.ageGroups.map(a=>a.band),datasets:[{data:ageJR,backgroundColor:ageJR.map(v=>v>=85?al(C.teal,.8):v>=75?al(C.amber,.8):al(C.rose,.8)),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,tooltip:{...bpl.tooltip,callbacks:{label:ctx=>`${ctx.raw}% join rate`}}},scales:{x:ng,y:{...sc,ticks:{...sc.ticks,callback:v=>v+'%'}}}}});
+
+  dc('ageSrcChart');
+  charts.ageSrcChart=new Chart(document.getElementById('ageSrcChart'),{type:'bar',data:{labels:D.ageGroups.map(a=>a.band),datasets:[
+    {label:'HR Leads',data:[1540,918,486,312,320],backgroundColor:al(C.grey,.8),stack:'s'},
+    {label:'Employee Ref',data:[512,402,215,118,76],backgroundColor:al(C.teal,.8),stack:'s'},
+    {label:'Phone',data:[720,580,324,192,199],backgroundColor:al(C.amber,.8),stack:'s'},
+    {label:'Other',data:[923,433,216,122,230],backgroundColor:al(C.indigo,.8),stack:'s'},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:legOpts},scales:{x:ng,y:sc}}});
+
+  dc('salaryChart');
+  charts.salaryChart=new Chart(document.getElementById('salaryChart'),{type:'bar',data:{labels:Object.keys(D.salary),datasets:[{data:Object.values(D.salary),backgroundColor:SER.map(c=>al(c,.8)),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,tooltip:{...bpl.tooltip,callbacks:{label:ctx=>`${ctx.raw} hires`}}},scales:{x:ng,y:sc}}});
+
+  dc('srcVolPie');
+  charts.srcVolPie=new Chart(document.getElementById('srcVolPie'),{type:'doughnut',data:{labels:D.sources.map(s=>s.name),datasets:[{data:D.sources.map(s=>s.total),backgroundColor:D.sources.map(s=>s.color),borderWidth:2,borderColor:surf()}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{...bpl,legend:{...legOpts,position:'right'}}}});
+
+  dc('srcBubble');
+  charts.srcBubble=new Chart(document.getElementById('srcBubble'),{type:'bubble',data:{datasets:D.sources.map(s=>({label:s.name,data:[{x:s.total,y:(s.sl/s.total*100),r:Math.max(5,Math.sqrt(s.total)/4)}],backgroundColor:al(s.color,.7),borderColor:s.color,borderWidth:1}))},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:{...legOpts,position:'right'}},scales:{x:{...sc,title:{display:true,text:'Volume',color:g.text}},y:{...sc,title:{display:true,text:'Shortlisting Rate %',color:g.text},ticks:{...sc.ticks,callback:v=>v+'%'}}}}});
+
+  buildFunnel();buildRecTable();buildSrcList();buildSrcJoin();buildDistJoin();buildBranchBars();
+  buildRoleGender();buildTatRec();buildTatExp();buildTatDiv();
+  hbars('recHbars',D.recruiters.map(r=>({name:r.name,joined:r.joined,not_j:r.not_j,will_j:r.will_j})),Math.max(...D.recruiters.map(r=>r.appts)));
+  hbars('expOutcomeBars',D.expResult.map(e=>({name:e.type,joined:e.joined,not_j:e.not_j,will_j:e.will_j})));
+  hbars('ageOutcomeBars',D.ageGroups.map(a=>({name:a.band,joined:a.joined,not_j:a.not_j,will_j:0})));
+}
+
+buildAll();
+
+// Resize charts on window resize
+let resizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(()=>Object.values(charts).forEach(ch=>{if(ch&&ch.resize)ch.resize()}),150);
+});
+
+// ══ GOOGLE SHEETS CONFIG ══════════════════════════════════════════
+// Published-to-web CSV links (File → Share → Publish to web → CSV)
+const FOLLOWUP_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQJOQz4wl-zoazPHCxilfMC1R3FTe6-9qUgr3ZuG_Y9RlQwGsuLEMxGIC8_zTMQpOhc2pdV76H1pBqa/pub?gid=0&single=true&output=csv';
+const APPT_URL     = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQJOQz4wl-zoazPHCxilfMC1R3FTe6-9qUgr3ZuG_Y9RlQwGsuLEMxGIC8_zTMQpOhc2pdV76H1pBqa/pub?gid=1330650178&single=true&output=csv';
+const SHEET_ID     = '17ypF4oe-IumPGjqoR0tGEEIa1RR-9-QSXvSOpos30W8';   // backup route (sheet must be shared "Anyone with the link – Viewer")
+const FOLLOWUP_GID = '0';
+const APPT_GID     = '1330650178';
+const GSHEET_ID    = FOLLOWUP_URL ? 'published' : '';   // truthy flag used by refresh logic
+const REFRESH_MS   = 2 * 60 * 1000;                     // auto-refresh every 2 minutes
+// ═══════════════════════════════════════════════════════════════════
+
+let gsTimer=null;
+
+
+function setUpdTime(){
+  const now=new Date();
+  const t=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('upd-time').textContent='Updated '+t;
+}
+
+function setBadgeLive(count){
+  const b=document.getElementById('src-badge');
+  b.textContent='🟢 Live Sheet';
+  b.style.background='rgba(20,196,180,.15)';b.style.borderColor='rgba(20,196,180,.4)';b.style.color='var(--teal)';
+  document.getElementById('hdr-meta-count').textContent=(count||0).toLocaleString()+' candidates';
+}
+function setBadgeError(msg){
+  const b=document.getElementById('src-badge');
+  b.textContent='🔴 Sheet error – click for details';b.style.cursor='pointer';
+  b.onclick=()=>alert('Sheet load problem:\n\n'+(msg||'')+'\n\nPage: '+location.href.slice(0,60));
+  b.style.background='rgba(220,69,69,.15)';b.style.borderColor='rgba(220,69,69,.4)';b.style.color='var(--rose)';
+}
+function setBadgeSample(){
+  const b=document.getElementById('src-badge');
+  b.textContent='⚪ Sample Data';b.style.background='';b.style.borderColor='';b.style.color='';
+  document.getElementById('hdr-meta-count').textContent='11,310 candidates';
+}
+
+const COL_MAP={
+  name:'Name',mobile:'Mobile',callConnected:'Call Connected',
+  age:'Age',gender:'Gender',education:'Education',
+  district:'District',expType:'Experience Type',
+  designation:'Designation',company:'Company',division:'Division',
+  source:'Source',recruiter:'Recruiter',
+  plannedOrNot:'Planned Or Not',callDate:'Call Date',
+  intDate:'Interview Date',intStatus:'Interview Status'
+};
+const APPT_COL_MAP={
+  name:'Name',mobile:'Mobile',company:'Company',designation:'Designation',
+  intDate:'Interview Date',branch:'Branch',dept:'Department',doj:'DOJ',
+  intStatus:'Interview Status',division:'Division',
+  intResult:'Interview Result',salary:'Salary',
+  expType:'Experience Type',recruiter:'Recruiter'
+};
+
+function normalizeGSheetUrl(url){
+  if(!url)return url;
+  if(url.includes('/pub?')&&url.includes('output=csv'))return url;
+  const m=url.match(/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  if(!m)return url;
+  const id=m[1];
+  const gidM=url.match(/[?&]gid=(\d+)/);
+  let pub=`https://docs.google.com/spreadsheets/d/${id}/pub?output=csv`;
+  if(gidM)pub+=`&gid=${gidM[1]}`;
+  return pub;
+}
+
+function parseCSV(text){
+  const rows=[];let row=[],cur='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(inQ){
+      if(ch==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else inQ=false; }
+      else cur+=ch;
+    }else{
+      if(ch==='"')inQ=true;
+      else if(ch===','){row.push(cur.trim());cur='';}
+      else if(ch==='\n'||ch==='\r'){
+        if(ch==='\r'&&text[i+1]==='\n')i++;
+        row.push(cur.trim());cur='';
+        if(row.some(c=>c!==''))rows.push(row);
+        row=[];
+      }else cur+=ch;
+    }
+  }
+  row.push(cur.trim());
+  if(row.some(c=>c!==''))rows.push(row);
+  return rows;
+}
+
+function csvToRecords(text,colMap){
+  const rows=parseCSV(text);if(!rows.length)return[];
+  const headers=rows[0].map(h=>h.trim());
+  const rev={};
+  for(const[field,col]of Object.entries(colMap)){
+    const idx=headers.findIndex(h=>h===col);
+    if(idx>=0)rev[field]=idx;
+  }
+  return rows.slice(1).map(row=>{
+    const rec={};
+    for(const[field,idx]of Object.entries(rev))rec[field]=row[idx]||'';
+    return rec;
+  });
+}
+
+window.gsLog=[];
+async function fetchOne(url){
+  const resp=await fetch(url);
+  if(!resp.ok)throw new Error('HTTP '+resp.status);
+  const text=await resp.text();
+  if(text.trim().startsWith('<'))throw new Error('Got a web page instead of CSV (sheet not published/shared publicly)');
+  if(text.trim().length<10)throw new Error('Empty response');
+  return text;
+}
+async function fetchCSV(url,gid){
+  const routes=[
+    ['published link',url],
+    ['gviz backup',`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}`],
+    ['export backup',`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`]
+  ];
+  for(const [name,u] of routes){
+    try{const t=await fetchOne(u);window.gsLog.push('OK via '+name);return t;}
+    catch(e){window.gsLog.push(name+': '+e.message);console.warn('Route failed',name,e);}
+  }
+  throw new Error('All routes failed → '+window.gsLog.slice(-3).join(' | '));
+}
+
+function deriveStatus(c){
+  if(!c||c.callConnected==='Not Connected')return'Not Connected';
+  if(!c.plannedOrNot||c.plannedOrNot==='Not Planned')return'Pipeline';
+  if((c.plannedOrNot||'').toLowerCase()==='planned'&&!c.intStatus)return'Interview Scheduled';
+  if(c.intStatus==='Shortlisted')return'Shortlisted';
+  if(c.intStatus==='Rejected'||c.intStatus==='Not Attended')return'Not Selected';
+  if(c.intResult==='Joined')return'Joined';
+  return'Pipeline';
+}
+
+async function loadGSheet(){
+  const url=FOLLOWUP_URL;
+  const apptUrl=APPT_URL;
+  try{
+    const text=await fetchCSV(url,FOLLOWUP_GID);
+    const main=csvToRecords(text,COL_MAP);
+    if(!main.length)throw new Error('No rows');
+    let appt=[];
+    if(apptUrl){try{const at=await fetchCSV(apptUrl,APPT_GID);appt=csvToRecords(at,APPT_COL_MAP);}catch(e){}}
+    const apptMap={};for(const a of appt)if(a.mobile)apptMap[a.mobile]=a;
+    D.liveRows=main.map(c=>{
+      const m=apptMap[c.mobile];
+      if(m){c.doj=m.doj||'';c.intResult=m.intResult||'';c.branch=m.branch||'';c.dept=m.dept||'';c.salary=m.salary||'';if(m.intStatus)c.intStatus=m.intStatus;}
+      c.status=deriveStatus(c);return c;
+    });
+    setBadgeLive(D.liveRows.length);
+    setUpdTime();
+    try{exFiltered=[...D.liveRows];exPage_=0;renderExTable();populateExFilters();}catch(re){console.error('Render failed:',re);window.gsLog.push('Render: '+re.message);}
+    return true;
+  }catch(e){console.error('GSheet load failed:',e);setBadgeError(e.message);return false;}
+}
+
+async function doRefresh(){
+  const btn=document.getElementById('refresh-btn');
+  btn.classList.add('spinning');btn.textContent='⏳ Loading…';
+  if(GSHEET_ID){
+    await loadGSheet();
+  }else{
+    // No sheet yet — just update timestamp for sample data
+    setUpdTime();
+  }
+  btn.classList.remove('spinning');btn.textContent='🔄 Refresh';
+}
+
+function startAutoRefresh(){
+  if(gsTimer)clearInterval(gsTimer);
+  if(GSHEET_ID)gsTimer=setInterval(loadGSheet,REFRESH_MS);
+}
+
+// ══ DRILL-DOWN MODAL ═══════════════════════════════════════════════
+let drillRows=[],drillPage_=0;
+const DRILL_PER=20;
+
+function statusPill(s){
+  const m={Joined:'green','Will Join':'amber','Not Joining':'rose',
+    'Not Connected':'grey',Pipeline:'grey','Interview Scheduled':'indigo',
+    Shortlisted:'green','Not Selected':'rose'};
+  return`<span class="pill pill-${m[s]||'grey'}">${s||'—'}</span>`;
+}
+
+function openDrill(title,rows){
+  drillRows=rows||[];drillPage_=0;
+  document.getElementById('drill-title').textContent=title;
+  document.getElementById('drill-count').textContent=drillRows.length.toLocaleString()+' records';
+  renderDrillTable();
+  document.getElementById('drill-modal').hidden=false;
+}
+function closeDrill(){document.getElementById('drill-modal').hidden=true;}
+
+function renderDrillTable(){
+  const start=drillPage_*DRILL_PER,end=start+DRILL_PER;
+  const page=drillRows.slice(start,end);
+  const tbody=document.getElementById('drill-tbody');
+  tbody.innerHTML=page.map(c=>`<tr>
+    <td>${c.name||'—'}</td><td>${c.mobile||'—'}</td>
+    <td>${c.gender||'—'}</td><td>${c.age||'—'}</td>
+    <td>${c.district||'—'}</td><td>${c.division||'—'}</td>
+    <td>${c.recruiter||'—'}</td>
+    <td>${statusPill(c.status||deriveStatus(c))}</td>
+    <td>${(c.callDate||'').slice(0,10)||'—'}</td>
+  </tr>`).join('');
+  const tot=Math.ceil(drillRows.length/DRILL_PER)||1;
+  document.getElementById('drill-pg-info').textContent=`Page ${drillPage_+1} of ${tot}`;
+  document.getElementById('drill-prev').disabled=drillPage_===0;
+  document.getElementById('drill-next').disabled=drillPage_>=tot-1;
+}
+
+function drillExportCSV(){
+  const hdr='Name,Mobile,Gender,Age,District,Division,Recruiter,Status,Call Date';
+  const rows=drillRows.map(c=>[c.name,c.mobile,c.gender,c.age,c.district,c.division,c.recruiter,c.status||deriveStatus(c),(c.callDate||'').slice(0,10)].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(','));
+  const blob=new Blob([[hdr,...rows].join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='drill_export.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+// ══ DATA EXPLORER ══════════════════════════════════════════════
+let exFiltered=[],exPage_=0;
+const EX_PER=20;
+
+function getExRows(){return D.liveRows.length?D.liveRows:[];}
+
+function populateExFilters(){
+  const rows=getExRows();
+  const fill=(id,key)=>{
+    const sel=document.getElementById(id);if(!sel)return;
+    const vals=[...new Set(rows.map(r=>r[key]||'').filter(Boolean))].sort();
+    sel.innerHTML='<option value="">All</option>'+vals.map(v=>`<option>${v}</option>`).join('');
+  };
+  fill('ex-f-div','division');fill('ex-f-rec','recruiter');
+  fill('ex-f-dist','district');fill('ex-f-gender','gender');fill('ex-f-src','source');
+}
+
+function applyExFilters(){
+  const q=(document.getElementById('ex-search').value||'').toLowerCase();
+  const fDiv=document.getElementById('ex-f-div').value;
+  const fRec=document.getElementById('ex-f-rec').value;
+  const fDist=document.getElementById('ex-f-dist').value;
+  const fGen=document.getElementById('ex-f-gender').value;
+  const fSrc=document.getElementById('ex-f-src').value;
+  const fSt=document.getElementById('ex-f-status').value;
+  exFiltered=getExRows().filter(c=>{
+    if(q&&!(c.name||'').toLowerCase().includes(q)&&!(c.mobile||'').includes(q))return false;
+    if(fDiv&&c.division!==fDiv)return false;
+    if(fRec&&c.recruiter!==fRec)return false;
+    if(fDist&&c.district!==fDist)return false;
+    if(fGen&&c.gender!==fGen)return false;
+    if(fSrc&&c.source!==fSrc)return false;
+    if(fSt&&(c.status||deriveStatus(c))!==fSt)return false;
+    return true;
+  });
+  exPage_=0;renderExTable();
+}
+
+function renderExTable(){
+  const start=exPage_*EX_PER,end=start+EX_PER;
+  const page=exFiltered.slice(start,end);
+  const tbody=document.getElementById('ex-tbody');
+  if(!exFiltered.length){
+    tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--t3)">No candidates found — connect a Google Sheet via ⚙ Settings to see live data</td></tr>';
+  }else{
+    tbody.innerHTML=page.map(c=>`<tr>
+      <td>${c.name||'—'}</td><td>${c.mobile||'—'}</td>
+      <td>${c.gender||'—'}</td><td>${c.age||'—'}</td>
+      <td>${c.district||'—'}</td><td>${c.division||'—'}</td>
+      <td>${c.recruiter||'—'}</td>
+      <td>${statusPill(c.status||deriveStatus(c))}</td>
+      <td>${(c.callDate||'').slice(0,10)||'—'}</td>
+    </tr>`).join('');
+  }
+  const tot=Math.ceil(exFiltered.length/EX_PER)||1;
+  document.getElementById('ex-count').textContent=`${exFiltered.length.toLocaleString()} candidates`;
+  document.getElementById('ex-pg-info').textContent=`Page ${exPage_+1} of ${tot}`;
+  document.getElementById('ex-prev').disabled=exPage_===0;
+  document.getElementById('ex-next').disabled=exPage_>=tot-1;
+}
+
+function exExportCSV(){
+  const hdr='Name,Mobile,Gender,Age,District,Division,Recruiter,Status,Call Date,Source';
+  const rows=exFiltered.map(c=>[c.name,c.mobile,c.gender,c.age,c.district,c.division,c.recruiter,c.status||deriveStatus(c),(c.callDate||'').slice(0,10),c.source].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(','));
+  const blob=new Blob([[hdr,...rows].join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hr_explorer_export.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+// ══ INIT ══
+D.liveRows=[];
+(function(){
+  // Show "Updated" time for sample data load
+  setUpdTime();
+  // If Sheet ID is configured, auto-load live data
+  if(GSHEET_ID){
+    loadGSheet().then(()=>startAutoRefresh());
+  }else{
+    setBadgeSample();
+    // Show sample data last updated note
+    document.getElementById('upd-time').textContent='Sample data · Sep 2026';
+  }
+  document.addEventListener('click',function(e){const m=document.getElementById('drill-modal');if(m&&e.target===m)closeDrill();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrill();});
+})();
+</script>
+
+<!-- ═══ DATA EXPLORER SECTION ═══ -->
+<section id="s-explorer" class="sec">
+  <div class="sec-hd">
+    <div class="sec-title">Data Explorer</div>
+    <div class="sec-sub">Search and filter live candidate records — connect Google Sheet via ⚙ Settings</div>
+  </div>
+  <div class="card">
+    <div class="ex-filters">
+      <input id="ex-search" class="ex-search" type="text" placeholder="Search by name or mobile…" oninput="applyExFilters()">
+      <select id="ex-f-div" class="ex-sel" onchange="applyExFilters()"><option value="">All Divisions</option></select>
+      <select id="ex-f-rec" class="ex-sel" onchange="applyExFilters()"><option value="">All Recruiters</option></select>
+      <select id="ex-f-dist" class="ex-sel" onchange="applyExFilters()"><option value="">All Districts</option></select>
+      <select id="ex-f-gender" class="ex-sel" onchange="applyExFilters()"><option value="">All Genders</option></select>
+      <select id="ex-f-src" class="ex-sel" onchange="applyExFilters()"><option value="">All Sources</option></select>
+      <select id="ex-f-status" class="ex-sel" onchange="applyExFilters()">
+        <option value="">All Statuses</option>
+        <option>Not Connected</option><option>Pipeline</option>
+        <option>Interview Scheduled</option><option>Shortlisted</option>
+        <option>Not Selected</option><option>Joined</option><option>Will Join</option>
+      </select>
+      <button class="exp-btn" onclick="exExportCSV()">⬇ Export CSV</button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <span id="ex-count" style="font-size:12px;color:var(--t3)">0 candidates</span>
+    </div>
+    <div class="ex-table-wrap">
+      <table class="ex-table">
+        <thead><tr>
+          <th>Name</th><th>Mobile</th><th>Gender</th><th>Age</th>
+          <th>District</th><th>Division</th><th>Recruiter</th><th>Status</th><th>Call Date</th>
+        </tr></thead>
+        <tbody id="ex-tbody">
+          <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--t3)">Connect a Google Sheet via ⚙ Settings to explore live data</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ex-pg">
+      <button id="ex-prev" onclick="exPage_--;renderExTable()" disabled>← Prev</button>
+      <span id="ex-pg-info">Page 1 of 1</span>
+      <button id="ex-next" onclick="exPage_++;renderExTable()" disabled>Next →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DRILL-DOWN MODAL ═══ -->
+<div id="drill-modal" class="modal-overlay" hidden>
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <span class="modal-hdr-title" id="drill-title">Detail View</span>
+      <button class="modal-close" onclick="closeDrill()">✕</button>
+    </div>
+    <div class="modal-sub">
+      <span id="drill-count" class="modal-count"></span>
+      <button class="exp-btn" onclick="drillExportCSV()">⬇ Export CSV</button>
+    </div>
+    <div class="modal-table-wrap">
+      <table>
+        <thead><tr>
+          <th>Name</th><th>Mobile</th><th>Gender</th><th>Age</th>
+          <th>District</th><th>Division</th><th>Recruiter</th><th>Status</th><th>Call Date</th>
+        </tr></thead>
+        <tbody id="drill-tbody"></tbody>
+      </table>
+    </div>
+    <div class="modal-pg">
+      <button id="drill-prev" onclick="drillPage_--;renderDrillTable()" disabled>← Prev</button>
+      <span id="drill-pg-info" class="modal-count">Page 1 of 1</span>
+      <button id="drill-next" onclick="drillPage_++;renderDrillTable()" disabled>Next →</button>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
