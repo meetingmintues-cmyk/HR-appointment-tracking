@@ -370,33 +370,33 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
   </div>
   <div class="kpi-row-5">
     <div class="kpi" style="--ac:var(--indigo)">
-      <div class="kpi-lbl">Total Pipeline</div>
+      <div class="kpi-lbl">Total Calls</div>
       <div class="kpi-val" id="kpi-total">11,310</div>
-      <div class="kpi-note">Candidates tracked YTD</div>
-      <span class="badge bi">9 months</span>
+      <div class="kpi-note" id="kpi-total-note">Candidates tracked YTD</div>
+      <span class="badge bi" id="kpi-total-months">—</span>
     </div>
     <div class="kpi" style="--ac:var(--amber)">
-      <div class="kpi-lbl">Call Connection Rate</div>
-      <div class="kpi-val" id="kpi-connected">78.2%</div>
-      <div class="kpi-note" id="kpi-conn-note">8,845 of 11,310 connected</div>
-      <span class="badge ba">+2.1% vs target</span>
+      <div class="kpi-lbl">Calls Connected</div>
+      <div class="kpi-val" id="kpi-connected">8,845</div>
+      <div class="kpi-note" id="kpi-conn-note">78.2% connection rate</div>
+      <span class="badge ba" id="kpi-conn-badge">of total calls</span>
     </div>
     <div class="kpi" style="--ac:var(--teal)">
       <div class="kpi-lbl">Total Joined</div>
       <div class="kpi-val" id="kpi-joined">1,611</div>
-      <div class="kpi-note">81.7% of shortlisted</div>
-      <span class="badge bg">Will Join: 113</span>
+      <div class="kpi-note" id="kpi-join-note">from appointments</div>
+      <span class="badge bg" id="kpi-willjoin-badge">Will Join: 113</span>
     </div>
     <div class="kpi" style="--ac:var(--rose)">
       <div class="kpi-lbl">Not Joining</div>
-      <div class="kpi-val" id="kpi-interviews">222</div>
-      <div class="kpi-note">11.2% dropout of appts</div>
-      <span class="badge br">Attrition risk</span>
+      <div class="kpi-val" id="kpi-notjoining">222</div>
+      <div class="kpi-note" id="kpi-notjoin-note">declined after shortlist</div>
+      <span class="badge br" id="kpi-notjoin-badge">Not Selected</span>
     </div>
     <div class="kpi" style="--ac:var(--purple)">
       <div class="kpi-lbl">End-to-End Conv.</div>
-      <div class="kpi-val">14.2%</div>
-      <div class="kpi-note">Pipeline → Joined</div>
+      <div class="kpi-val" id="kpi-conv">14.2%</div>
+      <div class="kpi-note">Calls → Joined</div>
       <span class="badge bi">Industry avg ~12%</span>
     </div>
   </div>
@@ -1155,15 +1155,36 @@ function buildAll(){
   const g=gr();const bpl=bp();const sc=scOpt(g);const ng=noGrid(g);
   const legOpts={display:true,labels:{color:g.text,font:{size:11,family:"'Inter'"},usePointStyle:true,boxWidth:8}};
 
+  // Filter trend chart to past/current months only
+  const _today=new Date();
+  const _todayYM=`${_today.getFullYear()}-${String(_today.getMonth()+1).padStart(2,'0')}`;
+  const _rawMonths=window._liveMonths||MONTHS;
+  // Map short month names to YYYY-MM for comparison when live months are short names
+  const _trendMonths=_rawMonths.filter(m=>{
+    if(/^\d{4}-\d{2}$/.test(m))return m<=_todayYM;
+    // short name — always include (can't compare without year)
+    return true;
+  });
+  // Trim D arrays to match filtered month count
+  const _trendCalls=D.calls.slice(0,_trendMonths.length);
+  const _trendInts=D.ints.slice(0,_trendMonths.length);
+  const _trendJoined=D.joined.slice(0,_trendMonths.length);
   dc('trendChart');
-  charts.trendChart=new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:(window._liveMonths||MONTHS),datasets:[
-    {label:'Calls Made',data:D.calls,borderColor:C.indigo,backgroundColor:al(C.indigo,.08),fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2},
-    {label:'Interviews',data:D.ints,borderColor:C.amber,backgroundColor:al(C.amber,.06),fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2,borderDash:[5,3]},
-    {label:'Joined',data:D.joined,borderColor:C.teal,backgroundColor:'transparent',tension:.35,pointRadius:4,pointHoverRadius:6,borderWidth:2.5},
+  charts.trendChart=new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:_trendMonths,datasets:[
+    {label:'Calls Made',data:_trendCalls,borderColor:C.indigo,backgroundColor:al(C.indigo,.08),fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2},
+    {label:'Interviews',data:_trendInts,borderColor:C.amber,backgroundColor:al(C.amber,.06),fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2,borderDash:[5,3]},
+    {label:'Joined',data:_trendJoined,borderColor:C.teal,backgroundColor:'transparent',tension:.35,pointRadius:4,pointHoverRadius:6,borderWidth:2.5},
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:bpl,scales:{x:ng,y:sc}}});
 
   dc('outcomePie');
-  charts.outcomePie=new Chart(document.getElementById('outcomePie'),{type:'doughnut',data:{labels:['Joined','Will Join','Not Joining'],datasets:[{data:[1611,113,222],backgroundColor:[C.teal,C.amber,C.rose],borderWidth:2,borderColor:surf()}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{...bpl,legend:{display:false}}}});
+  // Use live data if available, else fall back to hardcoded
+  const _pieJoined=D.liveRows&&D.liveRows.length?D.liveRows.filter(r=>r.status==='Joined').length:1611;
+  const _pieWillJoin=D.liveRows&&D.liveRows.length?D.liveRows.filter(r=>r.status==='Will Join').length:113;
+  const _pieNotJoin=D.liveRows&&D.liveRows.length?D.liveRows.filter(r=>r.status==='Not Joining'||r.status==='Not Selected').length:222;
+  charts.outcomePie=new Chart(document.getElementById('outcomePie'),{type:'doughnut',data:{labels:['Joined','Will Join','Not Joining'],datasets:[{data:[_pieJoined,_pieWillJoin,_pieNotJoin],backgroundColor:[C.teal,C.amber,C.rose],borderWidth:2,borderColor:surf()}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{...bpl,legend:{display:false}}}});
+  // Update pie legend text
+  const _pieLeg=document.getElementById('pie-legend');
+  if(_pieLeg)_pieLeg.innerHTML=`<span style="color:${C.teal}">●</span> Joined ${_pieJoined.toLocaleString()} &nbsp; <span style="color:${C.amber}">●</span> Will Join ${_pieWillJoin} &nbsp; <span style="color:${C.rose}">●</span> Not Joining ${_pieNotJoin}`;
 
   dc('divChart');
   const divNames=Object.keys(D.divisions);
@@ -1261,9 +1282,11 @@ function buildAll(){
   dc('srcBubble');
   charts.srcBubble=new Chart(document.getElementById('srcBubble'),{type:'bubble',data:{datasets:D.sources.map(s=>({label:s.name,data:[{x:s.total,y:(s.sl/s.total*100),r:Math.max(5,Math.sqrt(s.total)/4)}],backgroundColor:al(s.color,.7),borderColor:s.color,borderWidth:1}))},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:{...legOpts,position:'right'}},scales:{x:{...sc,title:{display:true,text:'Volume',color:g.text}},y:{...sc,title:{display:true,text:'Shortlisting Rate %',color:g.text},ticks:{...sc.ticks,callback:v=>v+'%'}}}}});
 
-  buildFunnel();buildRecTable();buildSrcList();buildSrcJoin();buildDistJoin();buildBranchBars();
+  // Only use hardcoded funnel if no live data; live data rebuilds it via rebuildFromLive()
+  if(!D.liveRows||!D.liveRows.length)buildFunnel();
+  buildRecTable();buildSrcList();buildSrcJoin();buildDistJoin();buildBranchBars();
   buildRoleGender();buildTatRec();buildTatExp();buildTatDiv();
-  hbars('recHbars',D.recruiters.map(r=>({name:r.name,joined:r.joined,not_j:r.not_j,will_j:r.will_j})),Math.max(...D.recruiters.map(r=>r.appts)));
+  hbars('recHbars',D.recruiters.map(r=>({name:r.name,joined:r.joined,not_j:r.not_j,will_j:r.will_j})),Math.max(...D.recruiters.map(r=>r.appts),1));
   hbars('expOutcomeBars',D.expResult.map(e=>({name:e.type,joined:e.joined,not_j:e.not_j,will_j:e.will_j})));
   hbars('ageOutcomeBars',D.ageGroups.map(a=>({name:a.band,joined:a.joined,not_j:a.not_j,will_j:0})));
   buildVerticalTab();
@@ -1423,11 +1446,13 @@ function populateDateFilter(rows){
   const sel=document.getElementById('date-filter');
   if(!sel)return;
   const ymSet=new Set();
+  const todayNow=new Date();
+  const todayYMNow=`${todayNow.getFullYear()}-${String(todayNow.getMonth()+1).padStart(2,'0')}`;
   for(const r of rows){
     const dd=parseRowDate(r.callDate);
     if(dd){
       const ym=`${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}`;
-      ymSet.add(ym);
+      if(ym<=todayYMNow)ymSet.add(ym); // exclude future months
     }
   }
   const sorted=[...ymSet].sort();
@@ -1467,22 +1492,31 @@ function rebuildFromLive(){
   rows.forEach(r=>{r.status=deriveStatus(r);});
   const connected=rows.filter(r=>r.status!=='Not Connected').length;
   const joined=rows.filter(r=>r.status==='Joined').length;
+  const willJoin=rows.filter(r=>r.status==='Will Join').length;
+  const notJoining=rows.filter(r=>r.status==='Not Joining'||r.status==='Not Selected').length;
   const interviews=rows.filter(r=>r.intDate&&r.intDate.trim()).length;
   const shortlisted=rows.filter(r=>r.status==='Shortlisted').length;
+  const convRate=total>0?((joined/total)*100).toFixed(1):'0.0';
+  const connRate=total>0?((connected/total)*100).toFixed(1):'0.0';
+  // Count distinct months in this dataset
+  const monthSet=new Set();
+  for(const r of rows){const dd=parseRowDate(r.callDate);if(dd){monthSet.add(`${dd.getFullYear()}-${dd.getMonth()}`);}}
+  const numMonths=monthSet.size;
 
-  // Update KPI cards (try to find them by id or class)
-  const kpiTotal=document.getElementById('kpi-total');
-  const kpiConn=document.getElementById('kpi-connected');
-  const kpiJoin=document.getElementById('kpi-joined');
-  const kpiInt=document.getElementById('kpi-interviews');
-  if(kpiTotal)kpiTotal.textContent=total.toLocaleString();
-  if(kpiConn)kpiConn.textContent=connected.toLocaleString();
-  if(kpiJoin)kpiJoin.textContent=joined.toLocaleString();
-  if(kpiInt)kpiInt.textContent=interviews.toLocaleString();
-
-  // ── Update note in overview KPIs ──
-  const kpiConnNote=document.getElementById('kpi-conn-note');
-  if(kpiConnNote)kpiConnNote.textContent=`${((connected/total)*100).toFixed(1)}% connection rate`;
+  // Update KPI cards
+  const _set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+  _set('kpi-total',total.toLocaleString());
+  _set('kpi-connected',connected.toLocaleString());
+  _set('kpi-joined',joined.toLocaleString());
+  _set('kpi-notjoining',notJoining.toLocaleString());
+  _set('kpi-conv',convRate+'%');
+  _set('kpi-conn-note',`${connRate}% connection rate`);
+  _set('kpi-conn-badge','of total calls');
+  _set('kpi-join-note','from appointments');
+  _set('kpi-notjoin-note','declined after shortlist');
+  _set('kpi-total-note',`Candidates tracked (${numMonths} months)`);
+  _set('kpi-willjoin-badge',`Will Join: ${willJoin.toLocaleString()}`);
+  _set('kpi-total-months',`${numMonths} months`);
 
   // ── Funnel ──
   const planned=rows.filter(r=>{const p=(r.plannedOrNot||'').trim().toLowerCase();return p==='planned'||p==='yes';}).length;
@@ -1596,33 +1630,31 @@ function rebuildFromLive(){
   }
   D.ageGroups=Object.entries(ageMap).map(([band,v])=>({band,...v}));
 
-  // ── Monthly trend (from callDate) ──
+  // ── Monthly trend (from callDate) — key = YYYY-MM for proper sorting & future filtering ──
   const mCalls={},mInts={},mJoins={},mNotJ={};
-  const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const now=new Date();
+  const todayYM=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
   for(const r of rows){
-    const d=r.callDate||'';if(!d)continue;
-    let dd;
-    const p1=d.match(/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/);
-    const p2=d.match(/^(\d{4})[-\/](\d{2})[-\/](\d{2})$/);
-    if(p1)dd=new Date(+p1[3],+p1[2]-1,+p1[1]);
-    else if(p2)dd=new Date(+p2[1],+p2[2]-1,+p2[3]);
-    else dd=new Date(d);
-    if(isNaN(dd))continue;
-    const k=MONTH_NAMES[dd.getMonth()];
-    mCalls[k]=(mCalls[k]||0)+1;
-    const s=r.status||deriveStatus(r);
-    if(r.intDate&&r.intDate.trim())mInts[k]=(mInts[k]||0)+1;
-    if(s==='Joined')mJoins[k]=(mJoins[k]||0)+1;
-    else if(s==='Not Joining'||s==='Not Selected')mNotJ[k]=(mNotJ[k]||0)+1;
+    const dd=parseRowDate(r.callDate);
+    if(!dd||isNaN(dd))continue;
+    const ym=`${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}`;
+    if(ym>todayYM)continue; // skip future months
+    mCalls[ym]=(mCalls[ym]||0)+1;
+    if(r.intDate&&r.intDate.trim())mInts[ym]=(mInts[ym]||0)+1;
+    if(r.status==='Joined')mJoins[ym]=(mJoins[ym]||0)+1;
+    else if(r.status==='Not Joining'||r.status==='Not Selected')mNotJ[ym]=(mNotJ[ym]||0)+1;
   }
-  const mKeys=Object.keys(mCalls).sort((a,b)=>MONTH_NAMES.indexOf(a)-MONTH_NAMES.indexOf(b));
+  const mKeys=Object.keys(mCalls).sort();
+  // Convert YYYY-MM keys to display labels like "Jan 2026"
+  const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const mLabels=mKeys.map(ym=>{const[y,m]=ym.split('-');return`${MN[+m-1]} ${y}`;});
   if(mKeys.length){
     D.calls=mKeys.map(k=>mCalls[k]||0);
     D.ints=mKeys.map(k=>mInts[k]||0);
     D.joined=mKeys.map(k=>mJoins[k]||0);
     D.notJoin=mKeys.map(k=>mNotJ[k]||0);
-    // update MONTHS global
-    window._liveMonths=mKeys;
+    window._liveMonths=mLabels; // display labels for chart axis
+    window._liveMonthsYM=mKeys; // YYYY-MM keys for filtering
   }
 
   // ── Company/Vertical stats ──
