@@ -341,15 +341,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
     <div class="hdr-meta" id="hdr-meta-count">11,310 candidates</div>
     <select id="date-filter" class="date-filter-sel" onchange="onDateFilterChange()" title="Filter by month">
       <option value="">All Months</option>
-      <option value="2026-01">Jan 2026</option>
-      <option value="2026-02">Feb 2026</option>
-      <option value="2026-03">Mar 2026</option>
-      <option value="2026-04">Apr 2026</option>
-      <option value="2026-05">May 2026</option>
-      <option value="2026-06">Jun 2026</option>
-      <option value="2026-07">Jul 2026</option>
-      <option value="2026-08">Aug 2026</option>
-      <option value="2026-09">Sep 2026</option>
     </select>
     <span class="src-badge" id="src-badge">⚪ Sample Data</span>
     <span class="upd-time" id="upd-time"></span>
@@ -512,12 +503,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
 <section id="s-rec" class="sec">
   <div class="sec-hd">
     <div class="sec-title">Recruiter Intelligence</div>
-    <div class="sec-sub">Individual performance · conversion · quality · attrition · 10 active recruiters</div>
+    <div class="sec-sub">Individual performance · conversion · quality · active recruiters</div>
   </div>
-  <div class="callout cr">⚠ <strong>Mubashir: 31.1% attrition</strong> — 1 in 3 candidates don't join after shortlisting. Vishnu: 23.5% attrition despite highest volume. <strong>Nihal is the benchmark: 2.5% attrition + 30.9% conversion.</strong></div>
   <div class="card mb">
     <div class="card-title">Recruiter Performance Matrix</div>
-    <div class="card-sub">Ranked by conversion rate. Attrition = Not Joining ÷ Appointments.</div>
+    <div class="card-sub">Ranked by conversion rate (Appointments ÷ Calls). Join Rate = Joined ÷ Appointments.</div>
     <div class="tbl-wrap"><table class="tbl" id="recTable"></table></div>
   </div>
   <div class="g2">
@@ -527,9 +517,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
       <div class="cw" style="--ch:280px"><canvas id="recBubble"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title">Attrition Rate per Recruiter</div>
-      <div class="card-sub">Not Joining ÷ Appointments. Lower is better.</div>
-      <div class="cw" style="--ch:280px"><canvas id="recAttr"></canvas></div>
+      <div class="card-title">Appointments vs Joined</div>
+      <div class="card-sub">Interview appointments vs confirmed joinings per recruiter</div>
+      <div class="cw" style="--ch:280px"><canvas id="recApptJoin"></canvas></div>
     </div>
   </div>
   <div class="g2">
@@ -984,14 +974,14 @@ function hbars(elId,rows,maxVal,withRate){
 function buildRecTable(){
   const el=document.getElementById('recTable');if(!el)return;
   const s=[...D.recruiters].sort((a,b)=>b.crate-a.crate);
-  const maxC=Math.max(...s.map(r=>r.calls));
-  const maxA=Math.max(...s.map(r=>r.appts));
+  const maxC=Math.max(...s.map(r=>r.calls),1);
+  const maxA=Math.max(...s.map(r=>r.appts),1);
   const rC=i=>['r1','r2','r3'][i]||'rn';
-  const atrCls=a=>a<10?'bg':a<20?'ba':'br';
   const jrCls=j=>j>=85?'bg':j>=70?'ba':'br';
+  const tatCls=t=>t>0&&t<=15?'bg':t>0&&t<=20?'ba':t>0?'br':'';
   el.innerHTML=`<thead><tr>
-    <th>Recruiter</th><th class="r">Calls</th><th class="r">Appts</th><th class="r">Joined</th>
-    <th class="r">Conv%</th><th class="r">Join Rate%</th><th class="r">Attrition%</th><th class="r">Avg TAT</th>
+    <th>Recruiter</th><th class="r">Calls</th><th class="r">Appointments</th><th class="r">Joined</th>
+    <th class="r">Conv%</th><th class="r">Join Rate%</th><th class="r">Avg TAT (days)</th>
   </tr></thead><tbody>${s.map((r,i)=>`<tr>
     <td><span class="rank ${rC(i)}">${i+1}</span><span class="tn">${r.name}</span></td>
     <td class="r">${r.calls.toLocaleString()}<div class="mini-bg"><div class="mini-fill" style="width:${(r.calls/maxC*100).toFixed(0)}%;background:${C.indigo}"></div></div></td>
@@ -999,8 +989,7 @@ function buildRecTable(){
     <td class="r">${r.joined}</td>
     <td class="r"><span class="badge ba">${r.crate}%</span></td>
     <td class="r"><span class="badge ${jrCls(r.jrate)}">${r.jrate}%</span></td>
-    <td class="r"><span class="badge ${atrCls(r.attr)}">${r.attr}%</span></td>
-    <td class="r" style="color:var(--t3)">${r.tatDays}d</td>
+    <td class="r">${r.tatDays>0?`<span class="badge ${tatCls(r.tatDays)}">${r.tatDays}d</span>`:'<span style="color:var(--t3)">—</span>'}</td>
   </tr>`).join('')}</tbody>`;
 }
 
@@ -1203,8 +1192,11 @@ function buildAll(){
   charts.recBubble=new Chart(document.getElementById('recBubble'),{type:'bubble',data:{datasets:D.recruiters.map((r,i)=>({label:r.name,data:[{x:r.calls,y:r.crate,r:Math.max(6,r.appts/12)}],backgroundColor:al(SER[i%SER.length],.7),borderColor:SER[i%SER.length],borderWidth:1}))},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:{...legOpts,position:'right'}},scales:{x:{...sc,title:{display:true,text:'Calls Volume',color:g.text}},y:{...sc,title:{display:true,text:'Conversion %',color:g.text},ticks:{...sc.ticks,callback:v=>v+'%'}}}}});
 
   dc('recAttr');
-  const rSorted=[...D.recruiters].sort((a,b)=>b.attr-a.attr);
-  charts.recAttr=new Chart(document.getElementById('recAttr'),{type:'bar',data:{labels:rSorted.map(r=>r.name),datasets:[{data:rSorted.map(r=>r.attr),backgroundColor:rSorted.map(r=>r.attr<10?al(C.teal,.8):r.attr<20?al(C.amber,.8):al(C.rose,.8)),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,tooltip:{...bpl.tooltip,callbacks:{label:ctx=>`${ctx.raw}% attrition`}}},scales:{x:ng,y:{...sc,ticks:{...sc.ticks,callback:v=>v+'%'}}}}});
+  dc('recApptJoin');
+  charts.recApptJoin=new Chart(document.getElementById('recApptJoin'),{type:'bar',data:{labels:D.recruiters.map(r=>r.name),datasets:[
+    {label:'Appointments',data:D.recruiters.map(r=>r.appts),backgroundColor:al(C.amber,.75),borderRadius:3,stack:'s'},
+    {label:'Joined',data:D.recruiters.map(r=>r.joined),backgroundColor:al(C.teal,.85),borderRadius:3,stack:'j'},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:{display:true,labels:{color:g.text,font:{family:"'Inter'",size:11}}}},scales:{x:ng,y:sc}}});
 
   dc('recMonthly');
   charts.recMonthly=new Chart(document.getElementById('recMonthly'),{type:'bar',data:{labels:MONTHS,datasets:Object.entries(D.recMonthly).map(([name,vals],i)=>({label:name,data:vals,backgroundColor:al(SER[i],.8),stack:'s',borderRadius:2}))},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:legOpts},scales:{x:ng,y:sc}}});
@@ -1384,19 +1376,66 @@ async function fetchCSV(url){
 }
 
 function deriveStatus(c){
-  if(!c||c.callConnected==='Not Connected')return'Not Connected';
-  if(!c.plannedOrNot||c.plannedOrNot==='Not Planned')return'Pipeline';
-  if((c.plannedOrNot||'').toLowerCase()==='planned'&&!c.intStatus)return'Interview Scheduled';
-  if(c.intStatus==='Shortlisted')return'Shortlisted';
-  if(c.intStatus==='Rejected'||c.intStatus==='Not Attended')return'Not Selected';
-  if(c.intResult==='Joined')return'Joined';
+  if(!c)return'Not Connected';
+  const cc=(c.callConnected||'').trim().toLowerCase();
+  // Not connected: empty, 'not connected', 'no', 'n'
+  if(!cc||cc==='not connected'||cc==='no'||cc==='n')return'Not Connected';
+  // Interview Result = Joined (from appointment tracking sheet)
+  const ir=(c.intResult||'').trim().toLowerCase();
+  if(ir==='joined'||ir==='yes')return'Joined';
+  // Interview Status checks
+  const is=(c.intStatus||'').trim().toLowerCase();
+  if(is==='shortlisted'||is==='selected')return'Shortlisted';
+  if(is==='rejected'||is==='not attended'||is==='not selected'||is==='failed')return'Not Selected';
+  if(is==='joined')return'Joined';
+  // Planned/Not Planned
+  const pln=(c.plannedOrNot||'').trim().toLowerCase();
+  if(!pln||pln==='not planned'||pln==='no')return'Pipeline';
+  if(pln==='planned'||pln==='yes'){
+    if(!c.intStatus||!c.intStatus.trim())return'Interview Scheduled';
+  }
   return'Pipeline';
 }
 
 // ── DATE FILTER HELPER ────────────────────────────────────────
+const MONTH_NAMES_FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTH_NAMES_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function parseRowDate(d){
+  if(!d||!d.trim())return null;
+  let dd;
+  const p1=d.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+  const p2=d.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+  const p3=d.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{2})$/); // DD-MM-YY
+  if(p1)dd=new Date(+p1[3],+p1[2]-1,+p1[1]);
+  else if(p2)dd=new Date(+p2[1],+p2[2]-1,+p2[3]);
+  else if(p3)dd=new Date(2000+(+p3[3]),+p3[2]-1,+p3[1]);
+  else dd=new Date(d);
+  return isNaN(dd)?null:dd;
+}
+
 function getActiveDateFilter(){
   const el=document.getElementById('date-filter');
   return el?el.value:'';
+}
+
+function populateDateFilter(rows){
+  const sel=document.getElementById('date-filter');
+  if(!sel)return;
+  const ymSet=new Set();
+  for(const r of rows){
+    const dd=parseRowDate(r.callDate);
+    if(dd){
+      const ym=`${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}`;
+      ymSet.add(ym);
+    }
+  }
+  const sorted=[...ymSet].sort();
+  const cur=sel.value;
+  sel.innerHTML='<option value="">All Months</option>'+sorted.map(ym=>{
+    const [y,m]=ym.split('-');
+    return`<option value="${ym}"${ym===cur?' selected':''}>${MONTH_NAMES_SHORT[+m-1]} ${y}</option>`;
+  }).join('');
 }
 
 function getFilteredRows(){
@@ -1404,16 +1443,8 @@ function getFilteredRows(){
   const df=getActiveDateFilter();
   if(!df)return D.liveRows;
   return D.liveRows.filter(r=>{
-    const d=r.callDate||'';
-    if(!d)return false;
-    // Parse date — try DD-MM-YYYY, DD/MM/YYYY, YYYY-MM-DD
-    let dd;
-    const p1=d.match(/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/);
-    const p2=d.match(/^(\d{4})[-\/](\d{2})[-\/](\d{2})$/);
-    if(p1)dd=new Date(+p1[3],+p1[2]-1,+p1[1]);
-    else if(p2)dd=new Date(+p2[1],+p2[2]-1,+p2[3]);
-    else dd=new Date(d);
-    if(isNaN(dd))return false;
+    const dd=parseRowDate(r.callDate);
+    if(!dd)return false;
     const ym=`${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}`;
     return ym===df;
   });
@@ -1432,10 +1463,12 @@ function rebuildFromLive(){
 
   // ── KPI counts ──
   const total=rows.length;
-  const connected=rows.filter(r=>r.callConnected&&r.callConnected.trim().toLowerCase()!=='not connected'&&r.callConnected.trim()!=='').length;
-  const joined=rows.filter(r=>(r.status||deriveStatus(r))==='Joined').length;
+  // Re-derive status for all rows fresh
+  rows.forEach(r=>{r.status=deriveStatus(r);});
+  const connected=rows.filter(r=>r.status!=='Not Connected').length;
+  const joined=rows.filter(r=>r.status==='Joined').length;
   const interviews=rows.filter(r=>r.intDate&&r.intDate.trim()).length;
-  const shortlisted=rows.filter(r=>(r.status||deriveStatus(r))==='Shortlisted').length;
+  const shortlisted=rows.filter(r=>r.status==='Shortlisted').length;
 
   // Update KPI cards (try to find them by id or class)
   const kpiTotal=document.getElementById('kpi-total');
@@ -1452,11 +1485,10 @@ function rebuildFromLive(){
   if(kpiConnNote)kpiConnNote.textContent=`${((connected/total)*100).toFixed(1)}% connection rate`;
 
   // ── Funnel ──
-  const pipeline=rows.filter(r=>(r.status||deriveStatus(r))!=='Not Connected').length;
-  const planned=rows.filter(r=>r.plannedOrNot&&r.plannedOrNot.toLowerCase()==='planned').length;
+  const planned=rows.filter(r=>{const p=(r.plannedOrNot||'').trim().toLowerCase();return p==='planned'||p==='yes';}).length;
   const apptCount=rows.filter(r=>r.intDate&&r.intDate.trim()).length;
   const funnelStages=[
-    {lbl:'Total Pipeline',n:total,c:C.indigo},
+    {lbl:'Total Calls',n:total,c:C.indigo},
     {lbl:'Calls Connected',n:connected,c:C.purple},
     {lbl:'Interview Planned',n:planned,c:C.amber},
     {lbl:'Shortlisted',n:shortlisted,c:C.teal},
@@ -1470,7 +1502,7 @@ function rebuildFromLive(){
       <div class="fn-meta">
         <div class="fn-num">${s.n.toLocaleString()}</div>
         <div class="fn-lbl">${s.lbl}</div>
-        ${i>0?`<div class="fn-pct">${max>0?((s.n/funnelStages[i-1].n||1)*100).toFixed(0):0}% of above</div>`:''}
+        ${i>0?`<div class="fn-pct">${funnelStages[i-1].n>0?((s.n/funnelStages[i-1].n)*100).toFixed(1):0}% of above</div>`:''}
       </div>
       <div class="fn-bar-bg"><div class="fn-bar" style="width:${((s.n/max)*100).toFixed(0)}%;background:${s.c}">${((s.n/max)*100).toFixed(0)}%</div></div>
     </div>
@@ -1480,20 +1512,25 @@ function rebuildFromLive(){
   // ── Recruiter stats ──
   const recMap={};
   for(const r of rows){
-    const n=r.recruiter||'Unknown';
-    if(!recMap[n])recMap[n]={name:n,calls:0,appts:0,joined:0,not_j:0,will_j:0};
+    const n=(r.recruiter||'Unknown').trim()||'Unknown';
+    if(!recMap[n])recMap[n]={name:n,calls:0,appts:0,joined:0,not_j:0,will_j:0,tatSum:0,tatCount:0};
     recMap[n].calls++;
-    const s=r.status||deriveStatus(r);
-    if(s==='Joined')recMap[n].joined++;
-    else if(s==='Not Joining'||s==='Not Selected')recMap[n].not_j++;
-    else if(s==='Will Join')recMap[n].will_j++;
+    if(r.status==='Joined')recMap[n].joined++;
+    else if(r.status==='Not Joining'||r.status==='Not Selected')recMap[n].not_j++;
+    else if(r.status==='Will Join')recMap[n].will_j++;
     if(r.intDate&&r.intDate.trim())recMap[n].appts++;
+    // TAT = callDate → intDate (days)
+    const cd=parseRowDate(r.callDate),id=parseRowDate(r.intDate);
+    if(cd&&id&&id>cd){
+      const diffDays=Math.round((id-cd)/(1000*60*60*24));
+      if(diffDays>0&&diffDays<365){recMap[n].tatSum+=diffDays;recMap[n].tatCount++;}
+    }
   }
   D.recruiters=Object.values(recMap).map(r=>{
     const crate=r.calls>0?+((r.appts/r.calls)*100).toFixed(1):0;
     const jrate=r.appts>0?+((r.joined/r.appts)*100).toFixed(1):0;
-    const attr=r.appts>0?+((r.not_j/r.appts)*100).toFixed(1):0;
-    return{...r,crate,jrate,attr,tatDays:0};
+    const tatDays=r.tatCount>0?Math.round(r.tatSum/r.tatCount):0;
+    return{...r,crate,jrate,attr:0,tatDays};
   }).filter(r=>r.calls>0).sort((a,b)=>b.calls-a.calls).slice(0,15);
   buildRecTable();
 
@@ -1624,6 +1661,7 @@ async function loadGSheet(){
     });
     setBadgeLive(D.liveRows.length);
     setUpdTime();
+    populateDateFilter(D.liveRows);
     rebuildFromLive();
     exFiltered=[...getFilteredRows()];exPage_=0;renderExTable();populateExFilters();
     return true;
