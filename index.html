@@ -75,7 +75,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
 .kpi-row-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
 .kpi{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;
-  padding:16px 18px;box-shadow:var(--sh);position:relative;overflow:hidden}
+  padding:16px 18px;box-shadow:var(--sh);position:relative;overflow:hidden;
+  transition:transform .15s,box-shadow .15s}
+.kpi.clickable{cursor:pointer}
+.kpi.clickable:hover{transform:translateY(-2px);box-shadow:var(--sh2);border-color:var(--ac,var(--amber))}
 .kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
   background:var(--ac,var(--amber));border-radius:0 0 10px 10px}
 .kpi-lbl{font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
@@ -369,31 +372,31 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
     <div class="sec-sub">Full recruitment pipeline · AM, Onroad, Beegains & Group companies · Jan–Sep 2026</div>
   </div>
   <div class="kpi-row-5">
-    <div class="kpi" style="--ac:var(--indigo)">
+    <div class="kpi clickable" style="--ac:var(--indigo)" onclick="openKpiDrill('all')" title="Click to view all candidates">
       <div class="kpi-lbl">Total Calls</div>
       <div class="kpi-val" id="kpi-total">11,310</div>
       <div class="kpi-note" id="kpi-total-note">Candidates tracked YTD</div>
       <span class="badge bi" id="kpi-total-months">—</span>
     </div>
-    <div class="kpi" style="--ac:var(--amber)">
+    <div class="kpi clickable" style="--ac:var(--amber)" onclick="openKpiDrill('connected')" title="Click to view connected candidates">
       <div class="kpi-lbl">Calls Connected</div>
       <div class="kpi-val" id="kpi-connected">8,845</div>
       <div class="kpi-note" id="kpi-conn-note">78.2% connection rate</div>
       <span class="badge ba" id="kpi-conn-badge">of total calls</span>
     </div>
-    <div class="kpi" style="--ac:var(--teal)">
+    <div class="kpi clickable" style="--ac:var(--teal)" onclick="openKpiDrill('joined')" title="Click to view joined candidates">
       <div class="kpi-lbl">Total Joined</div>
       <div class="kpi-val" id="kpi-joined">1,611</div>
       <div class="kpi-note" id="kpi-join-note">from appointments</div>
       <span class="badge bg" id="kpi-willjoin-badge">Will Join: 113</span>
     </div>
-    <div class="kpi" style="--ac:var(--rose)">
+    <div class="kpi clickable" style="--ac:var(--rose)" onclick="openKpiDrill('notjoining')" title="Click to view not joining candidates">
       <div class="kpi-lbl">Not Joining</div>
       <div class="kpi-val" id="kpi-notjoining">222</div>
       <div class="kpi-note" id="kpi-notjoin-note">declined after shortlist</div>
       <span class="badge br" id="kpi-notjoin-badge">Not Selected</span>
     </div>
-    <div class="kpi" style="--ac:var(--purple)">
+    <div class="kpi clickable" style="--ac:var(--purple)" onclick="openKpiDrill('pipeline')" title="Click to view pipeline candidates">
       <div class="kpi-lbl">End-to-End Conv.</div>
       <div class="kpi-val" id="kpi-conv">14.2%</div>
       <div class="kpi-note">Calls → Joined</div>
@@ -983,7 +986,11 @@ function buildRecTable(){
     <th>Recruiter</th><th class="r">Calls</th><th class="r">Appointments</th><th class="r">Joined</th>
     <th class="r">Conv%</th><th class="r">Join Rate%</th><th class="r">Avg TAT (days)</th>
   </tr></thead><tbody>${s.map((r,i)=>`<tr>
-    <td><span class="rank ${rC(i)}">${i+1}</span><span class="tn">${r.name}</span></td>
+    <td style="cursor:pointer" onclick="openDrillForRecruiter('${r.name.replace(/'/g,"\\'")}')" title="Click to view ${r.name}'s candidates">
+      <span class="rank ${rC(i)}">${i+1}</span>
+      <span class="tn" style="text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px">${r.name}</span>
+      <span style="font-size:10px;color:var(--t3);margin-left:4px">▶</span>
+    </td>
     <td class="r">${r.calls.toLocaleString()}<div class="mini-bg"><div class="mini-fill" style="width:${(r.calls/maxC*100).toFixed(0)}%;background:${C.indigo}"></div></div></td>
     <td class="r">${r.appts}<div class="mini-bg"><div class="mini-fill" style="width:${(r.appts/maxA*100).toFixed(0)}%;background:${C.teal}"></div></div></td>
     <td class="r">${r.joined}</td>
@@ -1102,7 +1109,11 @@ function buildVerticalTab(){
   if(!el||!D.companies)return;
   const totals=D.companies.reduce((a,c)=>({total:a.total+c.total,connected:a.connected+c.connected,joined:a.joined+c.joined}),{total:0,connected:0,joined:0});
   el.innerHTML=D.companies.slice(0,6).map(c=>`
-    <div class="kpi-card" style="min-width:160px">
+    <div class="kpi-card" style="min-width:160px;cursor:pointer;transition:transform .15s,box-shadow .15s"
+      onclick="openCompanyDrill('${c.name.replace(/'/g,"\\'")}')"
+      onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--sh2)'"
+      onmouseout="this.style.transform='';this.style.boxShadow=''"
+      title="Click to view ${c.name} candidates">
       <div class="kpi-val">${c.total.toLocaleString()}</div>
       <div class="kpi-lbl">${c.name}</div>
       <div class="kpi-note">${c.joined} joined · ${c.total>0?((c.joined/c.total)*100).toFixed(1):0}% rate</div>
@@ -1114,14 +1125,12 @@ function buildVerticalTab(){
   const tbl=document.getElementById('vert-table');
   if(!tbl||!D.companies.length)return;
   tbl.innerHTML=`<thead><tr>
-    <th>Company / Vertical</th><th class="r">Total Calls</th><th class="r">Connected</th>
-    <th class="r">Conn%</th><th class="r">Joined</th><th class="r">Join Rate%</th>
+    <th>Company / Vertical</th><th class="r">Connected</th>
+    <th class="r">Joined</th><th class="r">Join Rate%</th>
     <th class="r">Not Joining</th><th class="r">Shortlisted</th>
   </tr></thead><tbody>${D.companies.map((c,i)=>`<tr>
     <td><span class="rank ${['r1','r2','r3'][i]||'rn'}">${i+1}</span><strong>${c.name}</strong></td>
-    <td class="r">${c.total.toLocaleString()}</td>
     <td class="r">${c.connected.toLocaleString()}</td>
-    <td class="r"><span class="badge ${c.total>0&&(c.connected/c.total)>=0.7?'bg':(c.connected/c.total)>=0.5?'ba':'br'}">${c.total>0?((c.connected/c.total)*100).toFixed(1):0}%</span></td>
     <td class="r">${c.joined}</td>
     <td class="r"><span class="badge ${c.connected>0&&(c.joined/c.connected)>=0.15?'bg':(c.joined/c.connected)>=0.08?'ba':'br'}">${c.connected>0?((c.joined/c.connected)*100).toFixed(1):0}%</span></td>
     <td class="r">${c.not_j}</td>
@@ -1525,8 +1534,7 @@ function rebuildFromLive(){
     {lbl:'Total Calls',n:total,c:C.indigo},
     {lbl:'Calls Connected',n:connected,c:C.purple},
     {lbl:'Interview Planned',n:planned,c:C.amber},
-    {lbl:'Shortlisted',n:shortlisted,c:C.teal},
-    {lbl:'Appointments',n:apptCount,c:C.cyan},
+    {lbl:'Appointments',n:apptCount,c:C.teal},
     {lbl:'Confirmed Joined',n:joined,c:'#059669'},
   ];
   const max=funnelStages[0].n||1;
@@ -1731,6 +1739,44 @@ function openDrill(title,rows){
   document.getElementById('drill-modal').hidden=false;
 }
 function closeDrill(){document.getElementById('drill-modal').hidden=true;}
+
+// ── RECRUITER DRILL ─────────────────────────────────────────────
+function openDrillForRecruiter(name){
+  const rows=(D.liveRows||[]).filter(r=>(r.recruiter||'').trim()===name);
+  if(!rows.length){alert('No live data loaded yet — click Refresh first.');return;}
+  openDrill(`${name} — Candidates (${rows.length.toLocaleString()})`,rows);
+}
+
+// ── COMPANY DRILL ───────────────────────────────────────────────
+function openCompanyDrill(name){
+  const rows=(D.liveRows||[]).filter(r=>(r.company||'').trim()===name);
+  if(!rows.length){alert('No live data loaded yet — click Refresh first.');return;}
+  openDrill(`${name} — Candidates (${rows.length.toLocaleString()})`,rows);
+}
+
+// ── KPI CARD DRILL ──────────────────────────────────────────────
+function openKpiDrill(type){
+  const rows=D.liveRows||[];
+  if(!rows.length){alert('No live data loaded yet — click Refresh first.');return;}
+  let filtered,title;
+  switch(type){
+    case'connected':
+      filtered=rows.filter(r=>r.status!=='Not Connected');
+      title=`Calls Connected — ${filtered.length.toLocaleString()} Candidates`;break;
+    case'joined':
+      filtered=rows.filter(r=>r.status==='Joined');
+      title=`Joined — ${filtered.length.toLocaleString()} Candidates`;break;
+    case'notjoining':
+      filtered=rows.filter(r=>r.status==='Not Joining'||r.status==='Not Selected');
+      title=`Not Joining / Not Selected — ${filtered.length.toLocaleString()} Candidates`;break;
+    case'pipeline':
+      filtered=rows.filter(r=>r.status==='Pipeline'||r.status==='Interview Scheduled'||r.status==='Shortlisted');
+      title=`Active Pipeline — ${filtered.length.toLocaleString()} Candidates`;break;
+    default:
+      filtered=rows;title=`All Candidates — ${rows.length.toLocaleString()}`;
+  }
+  openDrill(title,filtered);
+}
 
 function renderDrillTable(){
   const start=drillPage_*DRILL_PER,end=start+DRILL_PER;
