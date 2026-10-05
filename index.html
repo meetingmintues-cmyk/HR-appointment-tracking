@@ -1741,39 +1741,50 @@ function openDrill(title,rows){
 function closeDrill(){document.getElementById('drill-modal').hidden=true;}
 
 // ── RECRUITER DRILL ─────────────────────────────────────────────
+// ── SHARED: get active month label for drill titles ──────────────
+function _drillMonthSuffix(){
+  const df=getActiveDateFilter();
+  if(!df)return'';
+  const [y,m]=df.split('-');
+  return` · ${MONTH_NAMES_SHORT[+m-1]} ${y}`;
+}
+
 function openDrillForRecruiter(name){
-  const rows=(D.liveRows||[]).filter(r=>(r.recruiter||'').trim()===name);
-  if(!rows.length){alert('No live data loaded yet — click Refresh first.');return;}
-  openDrill(`${name} — Candidates (${rows.length.toLocaleString()})`,rows);
+  const base=getFilteredRows();
+  if(!base.length){alert('No live data loaded yet — click Refresh first.');return;}
+  const rows=base.filter(r=>(r.recruiter||'').trim()===name);
+  openDrill(`${name}${_drillMonthSuffix()} — ${rows.length.toLocaleString()} Candidates`,rows);
 }
 
 // ── COMPANY DRILL ───────────────────────────────────────────────
 function openCompanyDrill(name){
-  const rows=(D.liveRows||[]).filter(r=>(r.company||'').trim()===name);
-  if(!rows.length){alert('No live data loaded yet — click Refresh first.');return;}
-  openDrill(`${name} — Candidates (${rows.length.toLocaleString()})`,rows);
+  const base=getFilteredRows();
+  if(!base.length){alert('No live data loaded yet — click Refresh first.');return;}
+  const rows=base.filter(r=>(r.company||'').trim()===name);
+  openDrill(`${name}${_drillMonthSuffix()} — ${rows.length.toLocaleString()} Candidates`,rows);
 }
 
 // ── KPI CARD DRILL ──────────────────────────────────────────────
 function openKpiDrill(type){
-  const rows=D.liveRows||[];
-  if(!rows.length){alert('No live data loaded yet — click Refresh first.');return;}
+  const base=getFilteredRows();
+  if(!base.length){alert('No live data loaded yet — click Refresh first.');return;}
+  const sfx=_drillMonthSuffix();
   let filtered,title;
   switch(type){
     case'connected':
-      filtered=rows.filter(r=>r.status!=='Not Connected');
-      title=`Calls Connected — ${filtered.length.toLocaleString()} Candidates`;break;
+      filtered=base.filter(r=>r.status!=='Not Connected');
+      title=`Calls Connected${sfx} — ${filtered.length.toLocaleString()} Candidates`;break;
     case'joined':
-      filtered=rows.filter(r=>r.status==='Joined');
-      title=`Joined — ${filtered.length.toLocaleString()} Candidates`;break;
+      filtered=base.filter(r=>r.status==='Joined');
+      title=`Joined${sfx} — ${filtered.length.toLocaleString()} Candidates`;break;
     case'notjoining':
-      filtered=rows.filter(r=>r.status==='Not Joining'||r.status==='Not Selected');
-      title=`Not Joining / Not Selected — ${filtered.length.toLocaleString()} Candidates`;break;
+      filtered=base.filter(r=>r.status==='Not Joining'||r.status==='Not Selected');
+      title=`Not Joining / Not Selected${sfx} — ${filtered.length.toLocaleString()} Candidates`;break;
     case'pipeline':
-      filtered=rows.filter(r=>r.status==='Pipeline'||r.status==='Interview Scheduled'||r.status==='Shortlisted');
-      title=`Active Pipeline — ${filtered.length.toLocaleString()} Candidates`;break;
+      filtered=base.filter(r=>r.status==='Pipeline'||r.status==='Interview Scheduled'||r.status==='Shortlisted');
+      title=`Active Pipeline${sfx} — ${filtered.length.toLocaleString()} Candidates`;break;
     default:
-      filtered=rows;title=`All Candidates — ${rows.length.toLocaleString()}`;
+      filtered=base;title=`All Candidates${sfx} — ${base.length.toLocaleString()}`;
   }
   openDrill(title,filtered);
 }
