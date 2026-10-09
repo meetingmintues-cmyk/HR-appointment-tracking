@@ -167,20 +167,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
 .pm{background:var(--ambl);color:#924D00}[data-theme="dark"] .pm{color:#F5B03C}
 .pl{background:var(--rose-l);color:#8B1F1F}[data-theme="dark"] .pl{color:#EF5353}
 
-/* ── TAT ─────────────────────────────────── */
-.tat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
-.tat-card{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;
-  padding:16px 18px;box-shadow:var(--sh);text-align:center}
-.tat-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;
-  color:var(--t1);letter-spacing:-1px;font-variant-numeric:tabular-nums}
-.tat-unit{font-size:11px;color:var(--t3);font-weight:500}
-.tat-lbl{font-size:11px;color:var(--t2);margin-top:5px}
-.tat-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.tat-name{width:100px;flex-shrink:0;font-size:11px;color:var(--t2);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tat-bar-bg{flex:1;background:var(--surf2);border-radius:4px;height:22px;border:1px solid var(--bdr);min-width:0}
-.tat-bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 6px;
-  font-size:10px;font-weight:600;color:#fff;transition:width .5s}
-.tat-val{width:40px;flex-shrink:0;text-align:right;font-size:11px;font-weight:600;color:var(--t1)}
 
 /* ── GENDER ─────────────────────────────────── */
 .gender-split{display:flex;align-items:stretch;border-radius:8px;overflow:hidden;height:40px;margin-bottom:10px;border:1px solid var(--bdr)}
@@ -194,7 +180,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
 @media(max-width:900px){
   .kpi-row,.kpi-row-5{grid-template-columns:1fr 1fr}
   .g2,.g3,.g4,.g31,.g13{grid-template-columns:1fr}
-  .tat-grid{grid-template-columns:1fr 1fr}
   .cw{--ch:220px}
 }
 @media(max-width:600px){
@@ -202,12 +187,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
   .brand-sub{display:none}
   .kpi-row,.kpi-row-5{grid-template-columns:1fr 1fr}
   .kpi-val{font-size:20px}
-  .tat-grid{grid-template-columns:1fr}
   .cw{--ch:190px}
   .fn-meta{width:90px}
   .fn-num{font-size:12px}
   .hb-lbl{width:80px;font-size:10px}
-  .tat-name{width:75px}
   .sec{padding:14px 12px}
   .card{padding:14px 14px}
   .sec-title{font-size:16px}
@@ -358,7 +341,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
   <button class="tab-btn" onclick="sw('rec',this)">👤 Recruiter</button>
   <button class="tab-btn" onclick="sw('gender',this)">⚧ Gender</button>
   <button class="tab-btn" onclick="sw('dist',this)">📍 District</button>
-  <button class="tab-btn" onclick="sw('tat',this)">⏱ TAT</button>
+
   <button class="tab-btn" onclick="sw('profile',this)">🎓 Profile</button>
   <button class="tab-btn" onclick="sw('source',this)">🔗 Source</button>
   <button class="tab-btn" onclick="sw('explorer',this)">🔍 Data Explorer</button>
@@ -650,73 +633,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-si
   </div>
 </section>
 
-<!-- ═══ TAT ═══ -->
-<section id="s-tat" class="sec">
-  <div class="sec-hd">
-    <div class="sec-title">TAT — Turnaround Time Analysis</div>
-    <div class="sec-sub">Call date → Interview date → Selection date · Speed of hiring pipeline</div>
-  </div>
-  <div class="callout ct">⏱ <strong>Average call-to-join takes 18 days.</strong> Freshers join fastest (avg 13 days). Experienced candidates take 22 days (notice periods). Recruiter Nihal has the fastest pipeline at avg 15 days call-to-selection.</div>
-
-  <div class="tat-grid">
-    <div class="tat-card" style="border-top:3px solid var(--indigo)">
-      <div class="tat-num">5.2</div>
-      <div class="tat-unit">days avg</div>
-      <div class="tat-lbl">Call → Interview Scheduled</div>
-    </div>
-    <div class="tat-card" style="border-top:3px solid var(--amber)">
-      <div class="tat-num">3.8</div>
-      <div class="tat-unit">days avg</div>
-      <div class="tat-lbl">Interview → Selection Decision</div>
-    </div>
-    <div class="tat-card" style="border-top:3px solid var(--teal)">
-      <div class="tat-num">9.1</div>
-      <div class="tat-unit">days avg</div>
-      <div class="tat-lbl">Selection → Actual Joining</div>
-    </div>
-  </div>
-
-  <div class="g2">
-    <div class="card">
-      <div class="card-title">TAT by Recruiter — Call to Selection</div>
-      <div class="card-sub">Average days from first call to selection decision (lower = faster)</div>
-      <div id="tatRecBars" style="margin-top:4px"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Monthly Avg TAT Trend</div>
-      <div class="card-sub">Call-to-selection days per month (Jan–Aug)</div>
-      <div class="cw" style="--ch:260px"><canvas id="tatMonthly"></canvas></div>
-    </div>
-  </div>
-
-  <div class="g2">
-    <div class="card">
-      <div class="card-title">TAT by Experience Type</div>
-      <div class="card-sub">Who moves fastest through the pipeline?</div>
-      <div id="tatExpBars" style="margin-top:4px"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">TAT by Division</div>
-      <div class="card-sub">Average days from call to joining per division</div>
-      <div id="tatDivBars" style="margin-top:4px"></div>
-    </div>
-  </div>
-</section>
-
 <!-- ═══ PROFILE ═══ -->
 <section id="s-profile" class="sec">
   <div class="sec-hd">
     <div class="sec-title">Candidate Profile Deep Dive</div>
-    <div class="sec-sub">Experience type joining speed · age-wise patterns · salary bands · education</div>
+    <div class="sec-sub">Experience type outcomes · age-wise patterns · salary bands · education</div>
   </div>
-  <div class="callout ci">🎓 <strong>Freshers (26.9%) join fastest</strong> — avg 13 days from selection. Experienced candidates (35.8%) take longest but have higher offer acceptance. Master/Senior graduates have lowest attrition once joined.</div>
+  <div class="callout ci">🎓 <strong>Freshers (26.9%) make up the largest experience segment.</strong> Experienced candidates (35.8%) have higher offer acceptance. Master/Senior graduates have strong post-joining retention.</div>
 
-  <div class="g2">
-    <div class="card">
-      <div class="card-title">Experience Type — Who Joins Fastest?</div>
-      <div class="card-sub">Avg days from selection to joining by experience level</div>
-      <div class="cw" style="--ch:230px"><canvas id="expSpeedChart"></canvas></div>
-    </div>
+  <div class="mb">
     <div class="card">
       <div class="card-title">Experience-wise Joining Outcome</div>
       <div class="card-sub">Joined · Will Join · Not Joining split by experience type</div>
@@ -808,16 +733,16 @@ const D={
   },
 
   recruiters:[
-    {name:'Nihal',   calls:1029,appts:318,joined:305,not_j:8, will_j:5, crate:30.9,jrate:95.9,attr:2.5,  tatDays:15},
-    {name:'Vishnu',  calls:1341,appts:264,joined:192,not_j:62,will_j:9, crate:19.7,jrate:72.7,attr:23.5, tatDays:19},
-    {name:'Shibila', calls:1330,appts:240,joined:215,not_j:19,will_j:5, crate:18.0,jrate:89.6,attr:7.9,  tatDays:16},
-    {name:'Dilruba', calls:1269,appts:229,joined:191,not_j:30,will_j:7, crate:18.0,jrate:83.4,attr:13.1, tatDays:18},
-    {name:'Vahid',   calls:1236,appts:209,joined:188,not_j:16,will_j:5, crate:16.9,jrate:90.0,attr:7.7,  tatDays:17},
-    {name:'Vishnu T',calls:849, appts:145,joined:110,not_j:20,will_j:15,crate:17.1,jrate:75.9,attr:13.8, tatDays:20},
-    {name:'Suhail',  calls:1254,appts:177,joined:123,not_j:26,will_j:18,crate:14.1,jrate:69.5,attr:14.7, tatDays:21},
-    {name:'Mubashir',calls:323, appts:45, joined:16, not_j:14,will_j:5, crate:13.9,jrate:35.6,attr:31.1, tatDays:25},
-    {name:'Rinsha',  calls:1170,appts:98, joined:85, not_j:8, will_j:4, crate:8.4, jrate:86.7,attr:8.2,  tatDays:17},
-    {name:'Fajil',   calls:411, appts:40, joined:40, not_j:0, will_j:0, crate:9.7, jrate:100, attr:0.0,  tatDays:14},
+    {name:'Nihal',   calls:1029,appts:318,joined:305,not_j:8, will_j:5, crate:30.9,jrate:95.9,attr:2.5},
+    {name:'Vishnu',  calls:1341,appts:264,joined:192,not_j:62,will_j:9, crate:19.7,jrate:72.7,attr:23.5},
+    {name:'Shibila', calls:1330,appts:240,joined:215,not_j:19,will_j:5, crate:18.0,jrate:89.6,attr:7.9},
+    {name:'Dilruba', calls:1269,appts:229,joined:191,not_j:30,will_j:7, crate:18.0,jrate:83.4,attr:13.1},
+    {name:'Vahid',   calls:1236,appts:209,joined:188,not_j:16,will_j:5, crate:16.9,jrate:90.0,attr:7.7},
+    {name:'Vishnu T',calls:849, appts:145,joined:110,not_j:20,will_j:15,crate:17.1,jrate:75.9,attr:13.8},
+    {name:'Suhail',  calls:1254,appts:177,joined:123,not_j:26,will_j:18,crate:14.1,jrate:69.5,attr:14.7},
+    {name:'Mubashir',calls:323, appts:45, joined:16, not_j:14,will_j:5, crate:13.9,jrate:35.6,attr:31.1},
+    {name:'Rinsha',  calls:1170,appts:98, joined:85, not_j:8, will_j:4, crate:8.4, jrate:86.7,attr:8.2},
+    {name:'Fajil',   calls:411, appts:40, joined:40, not_j:0, will_j:0, crate:9.7, jrate:100, attr:0.0},
   ],
 
   recMonthly:{
@@ -869,23 +794,21 @@ const D={
   ],
 
   expResult:[
-    {type:'Fresher',     joined:402,not_j:49,will_j:22,tatDays:13},
-    {type:'Experienced', joined:256,not_j:31,will_j:42,tatDays:22},
-    {type:'Intermediate',joined:297,not_j:45,will_j:20,tatDays:16},
-    {type:'Master',      joined:43, not_j:2, will_j:2, tatDays:11},
-    {type:'Senior',      joined:11, not_j:2, will_j:1, tatDays:18},
+    {type:'Fresher',     joined:402,not_j:49,will_j:22},
+    {type:'Experienced', joined:256,not_j:31,will_j:42},
+    {type:'Intermediate',joined:297,not_j:45,will_j:20},
+    {type:'Master',      joined:43, not_j:2, will_j:2},
+    {type:'Senior',      joined:11, not_j:2, will_j:1},
   ],
 
   ageGroups:[
-    {band:'18–25',pipeline:3695,joined:412,not_j:38,tatDays:11},
-    {band:'26–30',pipeline:2333,joined:498,not_j:62,tatDays:15},
-    {band:'31–35',pipeline:1241,joined:320,not_j:54,tatDays:19},
-    {band:'36–40',pipeline:744, joined:198,not_j:42,tatDays:22},
-    {band:'41+',  pipeline:825, joined:183,not_j:26,tatDays:25},
+    {band:'18–25',pipeline:3695,joined:412,not_j:38},
+    {band:'26–30',pipeline:2333,joined:498,not_j:62},
+    {band:'31–35',pipeline:1241,joined:320,not_j:54},
+    {band:'36–40',pipeline:744, joined:198,not_j:42},
+    {band:'41+',  pipeline:825, joined:183,not_j:26},
   ],
 
-  tatMonthly:[9.2,8.5,9.8,10.2,8.1,7.6,8.8,9.1],
-  tatDiv:{Arena:20,Service:16,Nexa:18,PDI:13,'True Value':15},
 
   roles:[
     {name:'Sales Exec',  joined:139,not_j:47,will_j:16,total:214},
@@ -981,10 +904,9 @@ function buildRecTable(){
   const maxA=Math.max(...s.map(r=>r.appts),1);
   const rC=i=>['r1','r2','r3'][i]||'rn';
   const jrCls=j=>j>=85?'bg':j>=70?'ba':'br';
-  const tatCls=t=>t>0&&t<=15?'bg':t>0&&t<=20?'ba':t>0?'br':'';
   el.innerHTML=`<thead><tr>
     <th>Recruiter</th><th class="r">Calls</th><th class="r">Appointments</th><th class="r">Joined</th>
-    <th class="r">Conv%</th><th class="r">Join Rate%</th><th class="r">Avg TAT (days)</th>
+    <th class="r">Conv%</th><th class="r">Join Rate%</th>
   </tr></thead><tbody>${s.map((r,i)=>`<tr>
     <td style="cursor:pointer" onclick="openDrillForRecruiter('${r.name.replace(/'/g,"\\'")}')" title="Click to view ${r.name}'s candidates">
       <span class="rank ${rC(i)}">${i+1}</span>
@@ -996,7 +918,6 @@ function buildRecTable(){
     <td class="r">${r.joined}</td>
     <td class="r"><span class="badge ba">${r.crate}%</span></td>
     <td class="r"><span class="badge ${jrCls(r.jrate)}">${r.jrate}%</span></td>
-    <td class="r">${r.tatDays>0?`<span class="badge ${tatCls(r.tatDays)}">${r.tatDays}d</span>`:'<span style="color:var(--t3)">—</span>'}</td>
   </tr>`).join('')}</tbody>`;
 }
 
@@ -1058,47 +979,6 @@ function buildRoleGender(){
       </div>
       <div class="hb-val">${tot}</div>
       <div class="hb-rate">${mW}%M</div>
-    </div>`;
-  }).join('');
-}
-
-function buildTatRec(){
-  const el=document.getElementById('tatRecBars');if(!el)return;
-  const sorted=[...D.recruiters].sort((a,b)=>a.tatDays-b.tatDays);
-  const mx=Math.max(...sorted.map(r=>r.tatDays));
-  el.innerHTML=sorted.map(r=>{
-    const w=((r.tatDays/mx)*100).toFixed(0);
-    const col=r.tatDays<=15?C.teal:r.tatDays<=19?C.amber:C.rose;
-    return `<div class="tat-bar-row">
-      <div class="tat-name">${r.name}</div>
-      <div class="tat-bar-bg"><div class="tat-bar-fill" style="width:${w}%;background:${col}">${r.tatDays}d</div></div>
-      <div class="tat-val">${r.tatDays}d</div>
-    </div>`;
-  }).join('');
-}
-function buildTatExp(){
-  const el=document.getElementById('tatExpBars');if(!el)return;
-  const mx=Math.max(...D.expResult.map(e=>e.tatDays));
-  el.innerHTML=D.expResult.map(e=>{
-    const w=((e.tatDays/mx)*100).toFixed(0);
-    const col=e.tatDays<=13?C.teal:e.tatDays<=18?C.amber:C.rose;
-    return `<div class="tat-bar-row">
-      <div class="tat-name">${e.type}</div>
-      <div class="tat-bar-bg"><div class="tat-bar-fill" style="width:${w}%;background:${col}">${e.tatDays}d avg</div></div>
-      <div class="tat-val">${e.tatDays}d</div>
-    </div>`;
-  }).join('');
-}
-function buildTatDiv(){
-  const el=document.getElementById('tatDivBars');if(!el)return;
-  const mx=Math.max(...Object.values(D.tatDiv));
-  el.innerHTML=Object.entries(D.tatDiv).map(([div,days])=>{
-    const w=((days/mx)*100).toFixed(0);
-    const col=days<=15?C.teal:days<=19?C.amber:C.rose;
-    return `<div class="tat-bar-row">
-      <div class="tat-name">${div}</div>
-      <div class="tat-bar-bg"><div class="tat-bar-fill" style="width:${w}%;background:${col}">${days}d avg</div></div>
-      <div class="tat-val">${days}d</div>
     </div>`;
   }).join('');
 }
@@ -1264,11 +1144,6 @@ function buildAll(){
   const distDivData={Arena:[1280,672,540,388,108],Service:[1130,589,462,412,86],Nexa:[645,282,198,214,100],PDI:[182,58,98,84,18],'True Value':[67,42,52,38,12]};
   charts.distDivChart=new Chart(document.getElementById('distDivChart'),{type:'bar',data:{labels:topDist,datasets:divArr.map((d,i)=>({label:d,data:distDivData[d],backgroundColor:al(SER[i],.8),stack:'s',borderRadius:2}))},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,legend:legOpts},scales:{x:ng,y:sc}}});
 
-  dc('tatMonthly');
-  charts.tatMonthly=new Chart(document.getElementById('tatMonthly'),{type:'line',data:{labels:MONTHS,datasets:[{label:'Avg TAT (days)',data:D.tatMonthly,borderColor:C.amber,backgroundColor:al(C.amber,.1),fill:true,tension:.4,pointRadius:4,pointHoverRadius:7,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,tooltip:{...bpl.tooltip,callbacks:{label:ctx=>`${ctx.raw} days`}}},scales:{x:ng,y:{...sc,ticks:{...sc.ticks,callback:v=>v+'d'}}}}});
-
-  dc('expSpeedChart');
-  charts.expSpeedChart=new Chart(document.getElementById('expSpeedChart'),{type:'bar',data:{labels:D.expResult.map(e=>e.type),datasets:[{data:D.expResult.map(e=>e.tatDays),backgroundColor:D.expResult.map(e=>e.tatDays<=13?al(C.teal,.8):e.tatDays<=18?al(C.amber,.8):al(C.rose,.8)),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{...bpl,tooltip:{...bpl.tooltip,callbacks:{label:ctx=>`${ctx.raw} days avg`}}},scales:{x:ng,y:{...sc,ticks:{...sc.ticks,callback:v=>v+'d'}}}}});
 
   dc('ageJoinChart');
   const ageJR=D.ageGroups.map(a=>((a.joined/(a.joined+a.not_j))*100).toFixed(1));
@@ -1294,7 +1169,7 @@ function buildAll(){
   // Only use hardcoded funnel if no live data; live data rebuilds it via rebuildFromLive()
   if(!D.liveRows||!D.liveRows.length)buildFunnel();
   buildRecTable();buildSrcList();buildSrcJoin();buildDistJoin();buildBranchBars();
-  buildRoleGender();buildTatRec();buildTatExp();buildTatDiv();
+  buildRoleGender();
   hbars('recHbars',D.recruiters.map(r=>({name:r.name,joined:r.joined,not_j:r.not_j,will_j:r.will_j})),Math.max(...D.recruiters.map(r=>r.appts),1));
   hbars('expOutcomeBars',D.expResult.map(e=>({name:e.type,joined:e.joined,not_j:e.not_j,will_j:e.will_j})));
   hbars('ageOutcomeBars',D.ageGroups.map(a=>({name:a.band,joined:a.joined,not_j:a.not_j,will_j:0})));
@@ -1555,24 +1430,17 @@ function rebuildFromLive(){
   const recMap={};
   for(const r of rows){
     const n=(r.recruiter||'Unknown').trim()||'Unknown';
-    if(!recMap[n])recMap[n]={name:n,calls:0,appts:0,joined:0,not_j:0,will_j:0,tatSum:0,tatCount:0};
+    if(!recMap[n])recMap[n]={name:n,calls:0,appts:0,joined:0,not_j:0,will_j:0};
     recMap[n].calls++;
     if(r.status==='Joined')recMap[n].joined++;
     else if(r.status==='Not Joining'||r.status==='Not Selected')recMap[n].not_j++;
     else if(r.status==='Will Join')recMap[n].will_j++;
     if(r.intDate&&r.intDate.trim())recMap[n].appts++;
-    // TAT = callDate → intDate (days)
-    const cd=parseRowDate(r.callDate),id=parseRowDate(r.intDate);
-    if(cd&&id&&id>cd){
-      const diffDays=Math.round((id-cd)/(1000*60*60*24));
-      if(diffDays>0&&diffDays<365){recMap[n].tatSum+=diffDays;recMap[n].tatCount++;}
-    }
   }
   D.recruiters=Object.values(recMap).map(r=>{
     const crate=r.calls>0?+((r.appts/r.calls)*100).toFixed(1):0;
     const jrate=r.appts>0?+((r.joined/r.appts)*100).toFixed(1):0;
-    const tatDays=r.tatCount>0?Math.round(r.tatSum/r.tatCount):0;
-    return{...r,crate,jrate,attr:0,tatDays};
+    return{...r,crate,jrate,attr:0};
   }).filter(r=>r.calls>0).sort((a,b)=>b.calls-a.calls).slice(0,15);
   buildRecTable();
 
@@ -1626,11 +1494,11 @@ function rebuildFromLive(){
   D.genderDiv=gM;D.genderSrc=gS;
 
   // ── Age groups ──
-  const ageMap={'18–25':{pipeline:0,joined:0,not_j:0,tatDays:11},'26–30':{pipeline:0,joined:0,not_j:0,tatDays:15},'31–35':{pipeline:0,joined:0,not_j:0,tatDays:19},'36–40':{pipeline:0,joined:0,not_j:0,tatDays:22},'41+':{pipeline:0,joined:0,not_j:0,tatDays:25}};
+  const ageMap={'18–25':{pipeline:0,joined:0,not_j:0},'26–30':{pipeline:0,joined:0,not_j:0},'31–35':{pipeline:0,joined:0,not_j:0},'36–40':{pipeline:0,joined:0,not_j:0},'41+':{pipeline:0,joined:0,not_j:0}};
   for(const r of rows){
     const a=+r.age||0;let band='18–25';
     if(a>=41)band='41+';else if(a>=36)band='36–40';else if(a>=31)band='31–35';else if(a>=26)band='26–30';
-    if(!ageMap[band])ageMap[band]={pipeline:0,joined:0,not_j:0,tatDays:0};
+    if(!ageMap[band])ageMap[band]={pipeline:0,joined:0,not_j:0};
     ageMap[band].pipeline++;
     const s=r.status||deriveStatus(r);
     if(s==='Joined')ageMap[band].joined++;
